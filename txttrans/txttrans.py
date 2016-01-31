@@ -110,8 +110,11 @@ def toupper(text):
 
 def toolbar(parent):
     frame = ttk.Frame(parent)
-    for t in _transformers:
-        create_button(frame, t.label, t.handler)
+    for i, t in enumerate(_transformers):
+        fkey_str = "F" + str(i + 1)
+        label = "[{}] {}".format(fkey_str, t.label)
+        parent.bind("<{}>".format(fkey_str), t.handler)
+        create_button(frame, label, t.handler)
     return frame
 
 
