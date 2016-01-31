@@ -9,9 +9,30 @@ import tkinter.ttk as ttk
 
 _textbox = None
 _transformers = []
+        
+# Stolen from some demos #######################################################
+
+class AutoScrollbar(ttk.Scrollbar):
+    """A scrollbar that hides it self if it's not needed.
+    Only works if you use the grid geometry manager.
+    """
+    def set(self, lo, hi):
+        if float(lo) <= 0.0 and float(hi) >= 1.0:
+            self.grid_remove()
+        else:
+            self.grid()
+        super().set(lo, hi)
+        
+    def pack(self, **kw):
+        raise tkinter.TclError("Can not use pack with this widget")
+    
+    def place(self, **kw):
+        raise tkinter.TclError("Can not use place with this widget")
+
+################################################################################
 
 
-# Helpers #####################################################################
+# Helpers ######################################################################
 
 class Transformer:
     def __init__(self, label, handler):
@@ -21,27 +42,20 @@ class Transformer:
 
 class transform_handler:
     def __init__(self, label):
-        """If there are decorator arguments, the function
-        to be decorated is not passed to the constructor!
-        """
         self.label = label
 
     def __call__(self, func):
-        """If there are decorator arguments, __call__() is only called
-        once, as part of the decoration process! You can only give it
-        a single argument, which is the function object.
-        """
         def wrapper(event=None):
             text = get_text()
             text = func(text)
             set_text(text)
-        t = Transformer(self.label, wrapper)
-        _transformers.append(t)
+            _textbox.focus_set()
+        _transformers.append(Transformer(self.label, wrapper))
         return wrapper
 
 
 def get_text():
-    return _textbox.get("1.0", "end")
+    return _textbox.get("1.0", "end").strip()
 
 
 def set_text(text):
@@ -54,19 +68,45 @@ def create_button(parent, label, command):
     button.pack(side='left')
     return button
 
-###############################################################################
+                
+def setup_scrollbars(container, widget):
+    vsb = AutoScrollbar(container, orient="vertical", command=widget.yview)
+    widget.configure(yscrollcommand=vsb.set)
+
+    widget.grid(column=0, row=0, sticky='nsew', in_=container)
+    vsb.grid(column=1, row=0, sticky='ns')
+    
+    container.grid_columnconfigure(0, weight=1)
+    container.grid_rowconfigure(0, weight=1)
 
 
-# Handlers ####################################################################
+def init_textbox(parent):
+    textbox = tkinter.Text(parent)
+    setup_scrollbars(parent, textbox)
+    textbox.focus_set()
+    return textbox
+
+################################################################################
+
+
+# Handlers #####################################################################
+
+@transform_handler("Help")
+def help(text):
+    return "XXX Write help text."
 
 @transform_handler("Hello")
 def say_hello(text):
     return "Hello, world!"
 
-###############################################################################
+@transform_handler("To upper")
+def toupper(text):
+    return text.upper()
+
+################################################################################
 
 
-# GUI initialization ##########################################################
+# GUI initialization ###########################################################
 
 def toolbar(parent):
     frame = ttk.Frame(parent)
@@ -77,12 +117,8 @@ def toolbar(parent):
 
 def main_area(parent):
     global _textbox
-
     frame = ttk.Frame(parent)
-
-    _textbox = tkinter.Text(frame)
-    _textbox.pack(fill="both")
-
+    _textbox = init_textbox(frame)
     return frame
 
 
@@ -91,11 +127,11 @@ def init_gui():
     root.wm_title("Text Transformator")
 
     toolbar(root).pack(anchor="n", fill="x")
-    main_area(root).pack(fill="both")
+    main_area(root).pack(fill="both", expand=True)
 
     return root
 
-###############################################################################
+################################################################################
 
 
 def main(args):
