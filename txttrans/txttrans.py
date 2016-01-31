@@ -49,6 +49,8 @@ class transform_handler:
             text = get_text()
             text = func(text)
             set_text(text)
+            _textbox.clipboard_clear()
+            _textbox.clipboard_append(text)
             _textbox.focus_set()
         _transformers.append(Transformer(self.label, wrapper))
         return wrapper
