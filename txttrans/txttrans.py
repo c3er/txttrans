@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+
 import tkinter
 import tkinter.messagebox
 import tkinter.ttk as ttk
+import json
+
+
+WINDOW_SIZE = "800x700"
 
 
 _textbox = None
 _transformers = []
+
         
 # Stolen from some demos #######################################################
 
@@ -46,8 +51,7 @@ class transform_handler:
 
     def __call__(self, func):
         def wrapper(event=None):
-            text = get_text()
-            text = func(text)
+            text = func(get_text())
             set_text(text)
             _textbox.clipboard_clear()
             _textbox.clipboard_append(text)
@@ -97,13 +101,14 @@ def init_textbox(parent):
 def help(text):
     return "XXX Write help text."
 
-@transform_handler("Hello")
-def say_hello(text):
-    return "Hello, world!"
 
-@transform_handler("To upper")
-def toupper(text):
-    return text.upper()
+@transform_handler("Beatify JSON")
+def beautify_json(text):
+    import json
+    import collections
+    obj = json.loads(text, object_pairs_hook=collections.OrderedDict)
+    text = json.dumps(obj, indent=4, separators=(",", ": "))
+    return text
 
 ################################################################################
 
@@ -130,6 +135,7 @@ def main_area(parent):
 def init_gui():
     root = tkinter.Tk()
     root.wm_title("Text Transformator")
+    root.geometry(WINDOW_SIZE)
 
     toolbar(root).pack(anchor="n", fill="x")
     main_area(root).pack(fill="both", expand=True)
@@ -139,9 +145,9 @@ def init_gui():
 ################################################################################
 
 
-def main(args):
+def main():
     root = init_gui()
     root.mainloop()
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
