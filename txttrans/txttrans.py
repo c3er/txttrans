@@ -52,6 +52,9 @@ class transform_handler:
     def __call__(self, func):
         def wrapper(event=None):
             text = func(get_text())
+            if text is None:
+                funcname = func.__name__
+                raise Exception("Transform handler '{}' returned 'None'.".format(funcname))
             set_text(text)
             _textbox.clipboard_clear()
             _textbox.clipboard_append(text)
@@ -107,8 +110,27 @@ def beautify_json(text):
     import json
     import collections
     obj = json.loads(text, object_pairs_hook=collections.OrderedDict)
-    text = json.dumps(obj, indent=4, separators=(",", ": "))
-    return text
+    return json.dumps(obj, indent=4, separators=(",", ": "))
+
+
+@transform_handler("Beautify XML")
+def beautify_xml(text):
+    import xml.dom.minidom
+    data = xml.dom.minidom.parseString(text)
+    return data.toprettyxml()
+    #import xml.etree.ElementTree
+    #def prettify(elem):
+    #    """Return a pretty-printed XML string for the Element.
+    #    """
+    #    # Source: http://stackoverflow.com/questions/17402323/use-xml-etree-elementtree-to-write-out-nicely-formatted-xml-files
+    #    rough_string = xml.etree.ElementTree.tostring(elem, 'utf-8')
+    #    reparsed = xml.dom.minidom.parseString(rough_string)
+    #    return reparsed.toprettyxml(indent="\t")
+    #if text:
+    #    root = xml.etree.ElementTree.fromstring(text)
+    #    return prettify(root)
+    #else:
+    #    return text
 
 ################################################################################
 
@@ -148,6 +170,7 @@ def init_gui():
 def main():
     root = init_gui()
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cfe87e9d-8154-45f9-8b4b-49218aa00f33</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>txttrans.py</StartupFile>
+    <StartupFile>xmllib.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,6 +28,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="txttrans.py" />
+    <Compile Include="xmllib.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
