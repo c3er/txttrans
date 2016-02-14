@@ -115,22 +115,8 @@ def beautify_json(text):
 
 @transform_handler("Beautify XML")
 def beautify_xml(text):
-    import xml.dom.minidom
-    data = xml.dom.minidom.parseString(text)
-    return data.toprettyxml()
-    #import xml.etree.ElementTree
-    #def prettify(elem):
-    #    """Return a pretty-printed XML string for the Element.
-    #    """
-    #    # Source: http://stackoverflow.com/questions/17402323/use-xml-etree-elementtree-to-write-out-nicely-formatted-xml-files
-    #    rough_string = xml.etree.ElementTree.tostring(elem, 'utf-8')
-    #    reparsed = xml.dom.minidom.parseString(rough_string)
-    #    return reparsed.toprettyxml(indent="\t")
-    #if text:
-    #    root = xml.etree.ElementTree.fromstring(text)
-    #    return prettify(root)
-    #else:
-    #    return text
+    import xmllib
+    return str(xmllib.XMLDocument.fromstring(text))
 
 ################################################################################
 

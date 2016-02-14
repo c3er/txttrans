@@ -118,4 +118,12 @@
       integrated into a comprehensive development 
       environment.</description>
    </book>
+   <book id="bk113">
+      <author>G&ouml;tz K&auml;&szlig;ner</author>
+      <title>B&ouml;se &amp; Bl&ouml;d</title>
+      <genre>B&auml;h</genre>
+      <price>666.66</price>
+      <publish_date>666-06-06</publish_date>
+      <description>Das ist ein b&ouml;ses Buch.</description>
+   </book>
 </catalog>
