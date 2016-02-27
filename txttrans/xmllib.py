@@ -122,20 +122,31 @@ class XMLNode(XMLNodeBase):
             headline += " " + str(self.attributes)
         if self.children:
             headline += ">"
-            childstrings = [child.tostring(indentlevel + 1, indentchar) for child in self.children]
             footline = "</" + self.name + ">"
+            childstrings = [child.tostring(indentlevel + 1, indentchar) for child in self.children]
 
-            # If the node content is only one line long, the whole node shall be printed in one line.
-            if len(childstrings) == 1 and "\n" not in childstrings[0]:
-                separator = ""
+            separator = self._get_separator()
+            if separator == "":
                 childstrings = [child.strip() for child in childstrings]
-            else:
-                separator =  "\n"
+            elif separator == "\n":
                 footline = indentation + footline
+
             text = separator.join([headline] + childstrings + [footline])
         else:
             text = headline + "/>"
         return text
+
+    def _get_separator(self):
+        if not self.children:
+            return ""
+        if len(self.children) > 1:
+            return "\n"
+        child = self.children[0]
+        if not isinstance(child, XMLTextNode):
+            return "\n"
+        if "\n" not in child.text:
+            return ""
+        return "\n"
 
 
 class XMLTextNode(XMLNodeBase):
