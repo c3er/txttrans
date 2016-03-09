@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cfe87e9d-8154-45f9-8b4b-49218aa00f33</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>xmllib.py</StartupFile>
+    <StartupFile>txttrans.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
