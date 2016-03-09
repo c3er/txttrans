@@ -5,7 +5,6 @@
 import tkinter
 import tkinter.messagebox
 import tkinter.ttk as ttk
-import json
 
 
 WINDOW_SIZE = "800x700"

@@ -10,7 +10,11 @@ A try to make an XML library that is able to pretty print an XML.
 import sys
 import os
 import collections
-import html.parser
+
+try:
+    import xmlparser
+except ImportError:
+    import xmllib.xmlparser as xmlparser
 
 
 class XMLError(Exception):
@@ -179,7 +183,7 @@ class XMLCommentNode(XMLNodeBase):
             return text
 
 
-class XMLReader(html.parser.HTMLParser):
+class XMLReader(xmlparser.HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=False)
         self.xml = XMLDocument()
@@ -245,11 +249,13 @@ class XMLReader(html.parser.HTMLParser):
 
     def handle_charref(self, name):
         print("handle_charref:", name)
-        super().handle_charref(name)
+        #super().handle_charref(name)
+        raise NotImplementedError()
 
     def handle_entityref(self, name):
         print("handle_entityref:", name)
-        super().handle_entityref(name)
+        #super().handle_entityref(name)
+        raise NotImplementedError()
     ############################################################################
 
 

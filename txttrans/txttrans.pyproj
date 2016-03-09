@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cfe87e9d-8154-45f9-8b4b-49218aa00f33</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>xmllib.py</StartupFile>
+    <StartupFile>txttrans.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -27,9 +27,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="txttrans.py" />
-    <Compile Include="xmllib.py">
+    <Compile Include="xmllib\entities.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="xmllib\main.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="xmllib\xmlparser.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="xmllib\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="xmllib\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
