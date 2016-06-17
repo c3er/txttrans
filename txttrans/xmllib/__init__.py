@@ -10,6 +10,7 @@ A try to make an XML library that is able to pretty print an XML.
 import sys
 import os
 import collections
+import unittest
 
 try:
     import xmlparser
@@ -22,16 +23,23 @@ class XMLError(Exception):
 
 
 class XMLDocument:
-    def __init__(self, doctype=None, nodes=[]):
-        assert isinstance(nodes, (list, collections.UserList))
-        self.nodes = nodes
+    def __init__(self, doctype=None, nodes=None):
+        self._nodes = nodes
         self.doctype = doctype
+
+        assert isinstance(self.nodes, (list, collections.UserList))
 
     def __str__(self):
         nodestrings = [str(node) for node in self.nodes]
         if self.doctype:
             nodestrings = [self.doctype] + nodestrings
         return "\n".join(nodestrings)
+
+    @property
+    def nodes(self):
+        if self._nodes is None:
+            self._nodes = []
+        return self._nodes
 
     def add_node(self, node):
         self.nodes.append(node)
@@ -52,6 +60,7 @@ class XMLChildList(collections.UserList):
         assert isinstance(item, XMLNodeBase)
         item.parent = item
         super().append(item)
+
 
 class XMLAttribute:
     def __init__(self, attr, val):
@@ -98,7 +107,7 @@ class XMLAttributeList(collections.UserList):
 
 class XMLNodeBase:
     def __init__(self, parent=None):
-        self.parent = None
+        self.parent = parent
         if parent:
             parent.add_child(self)
 
@@ -175,7 +184,7 @@ class XMLCommentNode(XMLNodeBase):
         lines = self.content.split("\n")
         if len(lines) > 1:
             # Put the comment marks to their own lines and indent the content one level deeper.
-            textlines = (indentation + indentchar + line for line in lines)
+            textlines = [indentation + indentchar + line for line in lines]
             text = "\n".join([indentation + "<!-- "] + textlines + [indentation + " -->"])
             return text
         else:
@@ -183,22 +192,28 @@ class XMLCommentNode(XMLNodeBase):
             return text
 
 
+# XXX 
 class XMLReader(xmlparser.HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=False)
-        self.xml = XMLDocument()
-        self.parent = None
-        self._stack = []
+        self.reset_xml()
 
     # Needed to use it with a "with" statement #################################
     def __enter__(self):
         return self.__class__()
 
     def __exit__(self, exc_type, exc_value, traceback):
+        self.reset_xml()
+        self.reset()
         self.close()
     ############################################################################
     
     # Helpers ##################################################################
+    def reset_xml(self):
+        self.xml = XMLDocument()
+        self.parent = None
+        self._stack = []
+
     def set_doctype(self, decl, firstchar):
         self.xml.doctype = "".join(("<", firstchar, decl, ">"))
 
@@ -213,7 +228,7 @@ class XMLReader(xmlparser.HTMLParser):
     def pop(self):
         self.parent = self._stack.pop()
     ############################################################################
-    
+
     # Inherited from html.parser.HTMLParser ####################################
     def handle_decl(self, decl):
         self.set_doctype(decl, "!")
@@ -248,13 +263,13 @@ class XMLReader(xmlparser.HTMLParser):
         self.pop()
 
     def handle_charref(self, name):
+        # Historical
         print("handle_charref:", name)
-        #super().handle_charref(name)
         raise NotImplementedError()
 
     def handle_entityref(self, name):
+        # Historical
         print("handle_entityref:", name)
-        #super().handle_entityref(name)
         raise NotImplementedError()
     ############################################################################
 
@@ -266,5 +281,18 @@ def main(args):
     xmldoc = XMLDocument.fromstring(content)
     print(str(xmldoc))
 
+
 if __name__ == "__main__":
     main(sys.argv)
+
+
+# Tests ########################################################################
+
+class TestClassXMLDocument(unittest.TestCase):
+    def test_2_instances_from_same_string_return_equal_string(self):
+        teststring = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
+        xml1 = str(XMLDocument.fromstring(teststring))
+        xml2 = str(XMLDocument.fromstring(teststring))
+        self.assertEqual(xml1, xml2)
+
+################################################################################
