@@ -115,7 +115,7 @@ def beautify_json(text):
 @transform_handler("Beautify XML")
 def beautify_xml(text):
     import xmllib
-    return str(xmllib.XMLDocument.fromstring(text))
+    return str(xmllib.str2xml(text))
 
 ################################################################################
 

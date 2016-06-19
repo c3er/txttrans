@@ -182,15 +182,14 @@ class XMLCommentNode(XMLNodeBase):
     def _contentarea(lines):
         startpos = 0
         endpos = len(lines)
-        startfound = False
-        endfound = False
         for i, line in enumerate(lines):
-            if not startfound and line.strip():
+            if line.strip():
                 startpos = i
-                startfound = True
-            elif startfound and not endfound and not line.strip():
-                endpos = i
-                endfound = True
+                break
+        for i, line in reversed(list(enumerate(lines))):
+            if line.strip():
+                endpos = i + 1
+                break
         return startpos, endpos
 
     @staticmethod
@@ -300,6 +299,10 @@ class XMLReader(xmlparser.HTMLParser):
     ############################################################################
 
 
+def str2xml(string):
+    return XMLDocument.fromstring(string)
+
+
 def main(args):
     xmlfile = args[1]
     with open(xmlfile) as f:
@@ -326,23 +329,36 @@ testxml_comment1 = '''\
 </root>
 '''
 
+testxml_comment2 = '''\
+<!--
+    Line1
+    
+    Line2
+-->
+'''
+
 
 class TestXMLDocumentStringHandling(unittest.TestCase):
     def test_2_instances_do_not_interfere_with_each_other(self):
         input = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
-        output1 = str(XMLDocument.fromstring(input))
-        output2 = str(XMLDocument.fromstring(input))
+        output1 = str(str2xml(input))
+        output2 = str(str2xml(input))
         self.assertEqual(output1, output2, "2 instances di not interfere with each other")
 
     def test_one_line_comment_stays_one_line_comment(self):
         input = '<!-- This is a test -->'
-        output = str(XMLDocument.fromstring(input))
+        output = str(str2xml(input))
         self.assertEqual(input, output, "One line comment is still a one line comment")
 
     def test_beautified_multiline_comment_stays_the_same(self):
-        output1 = str(XMLDocument.fromstring(testxml_comment1))
-        output2 = str(XMLDocument.fromstring(output1))
+        output1 = str(str2xml(testxml_comment1))
+        output2 = str(str2xml(output1))
         self.assertEqual(output1, output2, "Beautified one line comment stays the same")
+
+    def test_empty_lines_in_comments_do_not_cut_the_content(self):
+        output = str(str2xml(testxml_comment2))
+        linecount = len(output.split("\n"))
+        self.assertGreater(linecount, 1, "Empty line in comment did not cut the content")
 
     # Todo:
     # Appeareance of XML attributes...
