@@ -9,8 +9,8 @@ A try to make an XML library that is able to pretty print an XML.
 
 import sys
 import os
+import string
 import collections
-import unittest
 
 try:
     import xmlparser
@@ -80,7 +80,7 @@ class XMLAttribute:
 
 
 class XMLAttributeList(collections.UserList):
-    def __init__(self, attrs=[]):
+    def __init__(self, attrs=()):
         super().__init__()
         for attr in attrs:
             self.add(attr[0], attr[1])
@@ -119,7 +119,7 @@ class XMLNodeBase:
 
 
 class XMLNode(XMLNodeBase):
-    def __init__(self, name="", attrs=[], parent=None):
+    def __init__(self, name="", attrs=(), parent=None):
         super().__init__(parent)
         self.name = name
         self.attributes = XMLAttributeList(attrs)
@@ -170,14 +170,47 @@ class XMLTextNode(XMLNodeBase):
     def tostring(self, indentlevel, indentchar):
         lines = (line.strip() for line in self.text.split("\n"))
         lines = ((indentchar * indentlevel) + line for line in lines)
-        text = "\n".join(lines)
-        return text
+        return "\n".join(lines)
 
 
 class XMLCommentNode(XMLNodeBase):
     def __init__(self, content, parent=None):
         super().__init__(parent)
-        self.content = content.strip()
+        self.content = self._prepare_content(content)
+
+    @staticmethod
+    def _contentarea(lines):
+        startpos = 0
+        endpos = len(lines)
+        startfound = False
+        endfound = False
+        for i, line in enumerate(lines):
+            if not startfound and line.strip():
+                startpos = i
+                startfound = True
+            elif startfound and not endfound and not line.strip():
+                endpos = i
+                endfound = True
+        return startpos, endpos
+
+    @staticmethod
+    def _startpos(line):
+        for i, char in enumerate(line):
+            if char not in string.whitespace:
+                return i
+        return len(line)
+
+    def _prepare_content(self, content):
+        if not content:
+            return ""
+        lines = content.split("\n")
+        if len(lines) == 1:
+            return content.strip()
+        startlinepos, endlinepos = self._contentarea(lines)
+        lines = lines[startlinepos : endlinepos]
+        startpositions = [self._startpos(line) for line in lines]
+        minpos = min(startpositions)
+        return "\n".join(line[minpos:] for line in lines)
 
     def tostring(self, indentlevel, indentchar):
         indentation = indentchar * indentlevel
@@ -185,35 +218,28 @@ class XMLCommentNode(XMLNodeBase):
         if len(lines) > 1:
             # Put the comment marks to their own lines and indent the content one level deeper.
             textlines = [indentation + indentchar + line for line in lines]
-            text = "\n".join([indentation + "<!-- "] + textlines + [indentation + " -->"])
-            return text
+            return "\n".join([indentation + "<!-- "] + textlines + [indentation + " -->"])
         else:
-            text = indentation + "<!-- " + self.content + " -->"
-            return text
+            return indentation + "<!-- " + self.content + " -->"
 
 
-# XXX 
 class XMLReader(xmlparser.HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=False)
-        self.reset_xml()
+        self.xml = XMLDocument()
+        self.parent = None
+        self._stack = []
 
     # Needed to use it with a "with" statement #################################
     def __enter__(self):
         return self.__class__()
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.reset_xml()
         self.reset()
         self.close()
     ############################################################################
     
     # Helpers ##################################################################
-    def reset_xml(self):
-        self.xml = XMLDocument()
-        self.parent = None
-        self._stack = []
-
     def set_doctype(self, decl, firstchar):
         self.xml.doctype = "".join(("<", firstchar, decl, ">"))
 
@@ -288,11 +314,37 @@ if __name__ == "__main__":
 
 # Tests ########################################################################
 
-class TestClassXMLDocument(unittest.TestCase):
-    def test_2_instances_from_same_string_return_equal_string(self):
-        teststring = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
-        xml1 = str(XMLDocument.fromstring(teststring))
-        xml2 = str(XMLDocument.fromstring(teststring))
-        self.assertEqual(xml1, xml2)
+import unittest
+
+
+testxml_comment1 = '''\
+<root>
+    <!--Line1
+    Line2
+        Line3
+    -->
+</root>
+'''
+
+
+class TestXMLDocumentStringHandling(unittest.TestCase):
+    def test_2_instances_do_not_interfere_with_each_other(self):
+        input = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
+        output1 = str(XMLDocument.fromstring(input))
+        output2 = str(XMLDocument.fromstring(input))
+        self.assertEqual(output1, output2, "2 instances di not interfere with each other")
+
+    def test_one_line_comment_stays_one_line_comment(self):
+        input = '<!-- This is a test -->'
+        output = str(XMLDocument.fromstring(input))
+        self.assertEqual(input, output, "One line comment is still a one line comment")
+
+    def test_beautified_multiline_comment_stays_the_same(self):
+        output1 = str(XMLDocument.fromstring(testxml_comment1))
+        output2 = str(XMLDocument.fromstring(output1))
+        self.assertEqual(output1, output2, "Beautified one line comment stays the same")
+
+    # Todo:
+    # Appeareance of XML attributes...
 
 ################################################################################

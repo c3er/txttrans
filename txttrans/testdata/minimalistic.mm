@@ -1,12 +1,9 @@
 <map version="freeplane 1.2.0">
-<!--
-    How simple can a Freeplane mind map file be and still be valid?
-    
+<!--How simple can a Freeplane mind map file be and still be valid?
     Needed:
     - Node structure
     - Node labels
     - Containing links
-    
     Notes:
     - The root node needs a version attribute. It was tried to give this version
       a lowest number as possible.
