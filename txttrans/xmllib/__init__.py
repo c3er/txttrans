@@ -53,12 +53,13 @@ class XMLDocument:
 
 class XMLChildList(collections.UserList):
     def __init__(self, node):
+        assert isinstance(node, XMLNodeBase)
         super().__init__()
         self.node = node
 
     def append(self, item):
         assert isinstance(item, XMLNodeBase)
-        item.parent = item
+        item.parent = self.node
         super().append(item)
 
 
@@ -178,6 +179,16 @@ class XMLCommentNode(XMLNodeBase):
         super().__init__(parent)
         self.content = self._prepare_content(content)
 
+    def tostring(self, indentlevel, indentchar):
+        indentation = indentchar * indentlevel
+        lines = self.content.split("\n")
+        if len(lines) > 1:
+            # Put the comment marks to their own lines and indent the content one level deeper.
+            textlines = [indentation + indentchar + line for line in lines]
+            return "\n".join([indentation + "<!-- "] + textlines + [indentation + " -->"])
+        else:
+            return indentation + "<!-- " + self.content + " -->"
+
     @staticmethod
     def _contentarea(lines):
         startpos = 0
@@ -202,24 +213,16 @@ class XMLCommentNode(XMLNodeBase):
     def _prepare_content(self, content):
         if not content:
             return ""
+
         lines = content.split("\n")
         if len(lines) == 1:
             return content.strip()
+
         startlinepos, endlinepos = self._contentarea(lines)
         lines = lines[startlinepos : endlinepos]
         startpositions = [self._startpos(line) for line in lines]
         minpos = min(startpositions)
         return "\n".join(line[minpos:] for line in lines)
-
-    def tostring(self, indentlevel, indentchar):
-        indentation = indentchar * indentlevel
-        lines = self.content.split("\n")
-        if len(lines) > 1:
-            # Put the comment marks to their own lines and indent the content one level deeper.
-            textlines = [indentation + indentchar + line for line in lines]
-            return "\n".join([indentation + "<!-- "] + textlines + [indentation + " -->"])
-        else:
-            return indentation + "<!-- " + self.content + " -->"
 
 
 class XMLReader(xmlparser.HTMLParser):
@@ -343,8 +346,10 @@ class TestXMLDocumentStringHandling(unittest.TestCase):
         input = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
         output1 = str(str2xml(input))
         output2 = str(str2xml(input))
-        self.assertEqual(output1, output2, "2 instances di not interfere with each other")
+        self.assertEqual(output1, output2, "2 instances did not interfere with each other")
 
+
+class TestXMLCommentHandling(unittest.TestCase):
     def test_one_line_comment_stays_one_line_comment(self):
         input = '<!-- This is a test -->'
         output = str(str2xml(input))
@@ -360,7 +365,8 @@ class TestXMLDocumentStringHandling(unittest.TestCase):
         linecount = len(output.split("\n"))
         self.assertGreater(linecount, 1, "Empty line in comment did not cut the content")
 
-    # Todo:
-    # Appeareance of XML attributes...
+
+# Todo:
+# Appeareance of XML attributes...
 
 ################################################################################

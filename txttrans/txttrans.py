@@ -50,14 +50,16 @@ class transform_handler:
 
     def __call__(self, func):
         def wrapper(event=None):
-            text = func(get_text())
-            if text is None:
-                funcname = func.__name__
-                raise Exception("Transform handler '{}' returned 'None'.".format(funcname))
-            set_text(text)
-            _textbox.clipboard_clear()
-            _textbox.clipboard_append(text)
-            _textbox.focus_set()
+            try:
+                text = func(get_text())
+                if text is None:
+                    funcname = func.__name__
+                    raise Exception("Transform handler '{}' returned 'None'.".format(funcname))
+                _textbox.clipboard_clear()
+                _textbox.clipboard_append(text)
+                set_text(text)
+            finally:
+                _textbox.focus_set()
         _transformers.append(Transformer(self.label, wrapper))
         return wrapper
 
