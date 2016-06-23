@@ -15,7 +15,6 @@ _transformers = []
 
         
 # Stolen from some demos #######################################################
-
 class AutoScrollbar(ttk.Scrollbar):
     """A scrollbar that hides it self if it's not needed.
     Only works if you use the grid geometry manager.
@@ -37,7 +36,6 @@ class AutoScrollbar(ttk.Scrollbar):
 
 
 # Helpers ######################################################################
-
 class Transformer:
     def __init__(self, label, handler):
         self.label = label
@@ -53,8 +51,7 @@ class transform_handler:
             try:
                 text = func(get_text())
                 if text is None:
-                    funcname = func.__name__
-                    raise Exception("Transform handler '{}' returned 'None'.".format(funcname))
+                    raise Exception("Transform handler '{}' returned 'None'.".format(func.__name__))
                 _textbox.clipboard_clear()
                 _textbox.clipboard_append(text)
                 set_text(text)
@@ -100,7 +97,6 @@ def init_textbox(parent):
 
 
 # Handlers #####################################################################
-
 @transform_handler("Help")
 def help(text):
     return "XXX Write help text."
@@ -123,7 +119,6 @@ def beautify_xml(text):
 
 
 # GUI initialization ###########################################################
-
 def toolbar(parent):
     frame = ttk.Frame(parent)
     for i, t in enumerate(_transformers):
@@ -152,7 +147,6 @@ def init_gui():
     return root
 
 ################################################################################
-
 
 def main():
     root = init_gui()

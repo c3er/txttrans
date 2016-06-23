@@ -169,7 +169,7 @@ class XMLTextNode(XMLNodeBase):
         self.text = text.strip()
 
     def tostring(self, indentlevel, indentchar):
-        lines = (line.strip() for line in self.text.split("\n"))
+        lines = (line.strip() for line in self.text.splitlines())
         lines = ((indentchar * indentlevel) + line for line in lines)
         return "\n".join(lines)
 
@@ -181,7 +181,7 @@ class XMLCommentNode(XMLNodeBase):
 
     def tostring(self, indentlevel, indentchar):
         indentation = indentchar * indentlevel
-        lines = self.content.split("\n")
+        lines = self.content.splitlines()
         if len(lines) > 1:
             # Put the comment marks to their own lines and indent the content one level deeper.
             textlines = [indentation + indentchar + line for line in lines]
@@ -214,7 +214,7 @@ class XMLCommentNode(XMLNodeBase):
         if not content:
             return ""
 
-        lines = content.split("\n")
+        lines = content.splitlines()
         if len(lines) == 1:
             return content.strip()
 
@@ -331,13 +331,33 @@ testxml_comment1 = '''\
     -->
 </root>
 '''
-
 testxml_comment2 = '''\
 <!--
     Line1
     
     Line2
 -->
+'''
+
+testxml_text1 = '<root>This is a test</root>'
+testxml_text2 = '''\
+<root>
+    This is a test
+</root>
+'''
+testxml_text3 = '''\
+<root>Line 1
+    Line 2
+    Line 3
+</root>
+'''
+testxml_text4 = '''\
+<root>Line 1
+
+    Line 2
+
+    Line 3
+</root>
 '''
 
 
@@ -362,8 +382,14 @@ class TestXMLCommentHandling(unittest.TestCase):
 
     def test_empty_lines_in_comments_do_not_cut_the_content(self):
         output = str(str2xml(testxml_comment2))
-        linecount = len(output.split("\n"))
+        linecount = len(output.splitlines())
         self.assertGreater(linecount, 1, "Empty line in comment did not cut the content")
+
+
+class TestXMLTextHandling(unittest.TestCase):
+    def test_one_liner_stays_one_liner(self):
+        output = str(str2xml(testxml_text1))
+        self.assertEqual(output, testxml_text1, "One line node, containing one line text did not change")
 
 
 # Todo:
