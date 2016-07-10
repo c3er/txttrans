@@ -158,7 +158,7 @@ class XMLNode(XMLNodeBase):
         child = self.children[0]
         if not isinstance(child, XMLTextNode):
             return "\n"
-        if "\n" not in child.text:
+        if not child.ismultiline:
             return ""
         return "\n"
 
@@ -166,6 +166,7 @@ class XMLNode(XMLNodeBase):
 class XMLTextNode(XMLNodeBase):
     def __init__(self, text, parent=None):
         super().__init__(parent)
+        self.ismultiline = "\n" in text
         self.text = text.strip()
 
     def tostring(self, indentlevel, indentchar):
@@ -323,6 +324,14 @@ if __name__ == "__main__":
 import unittest
 
 
+class TestXMLDocumentStringHandling(unittest.TestCase):
+    def test_2_instances_do_not_interfere_with_each_other(self):
+        input = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
+        output1 = str(str2xml(input))
+        output2 = str(str2xml(input))
+        self.assertEqual(output1, output2, "2 instances did not interfere with each other")
+
+
 testxml_comment1 = '''\
 <root>
     <!--Line1
@@ -338,35 +347,6 @@ testxml_comment2 = '''\
     Line2
 -->
 '''
-
-testxml_text1 = '<root>This is a test</root>'
-testxml_text2 = '''\
-<root>
-    This is a test
-</root>
-'''
-testxml_text3 = '''\
-<root>Line 1
-    Line 2
-    Line 3
-</root>
-'''
-testxml_text4 = '''\
-<root>Line 1
-
-    Line 2
-
-    Line 3
-</root>
-'''
-
-
-class TestXMLDocumentStringHandling(unittest.TestCase):
-    def test_2_instances_do_not_interfere_with_each_other(self):
-        input = '<root><sub1>This</sub1><sub2 attr="is"/>a test</root>'
-        output1 = str(str2xml(input))
-        output2 = str(str2xml(input))
-        self.assertEqual(output1, output2, "2 instances did not interfere with each other")
 
 
 class TestXMLCommentHandling(unittest.TestCase):
@@ -386,10 +366,75 @@ class TestXMLCommentHandling(unittest.TestCase):
         self.assertGreater(linecount, 1, "Empty line in comment did not cut the content")
 
 
+goodxml_text1 = '<root>This is a test</root>'
+goodxml_text2 = '''\
+<root>
+    This is a test
+</root>
+'''
+goodxml_text3 = '''\
+<root>
+    Line 1
+    Line 2
+    Line 3
+</root>
+'''
+goodxmltext3 = '''\
+<root>
+    Line 1
+
+    Line 2
+
+
+    Line 3
+</root>
+'''
+reference_xml1 = goodxml_text3
+badxml_text1 = '''\
+<root>Line 1
+    Line 2
+    Line 3
+</root>
+'''
+badxml_text2 = '''\
+<root>
+Line 1
+Line 2
+Line 3
+</root>
+'''
+badxml_text3 = '''\
+<root>
+Line 1
+Line 2
+Line 3</root>
+'''
+
+
 class TestXMLTextHandling(unittest.TestCase):
-    def test_one_liner_stays_one_liner(self):
-        output = str(str2xml(testxml_text1))
-        self.assertEqual(output, testxml_text1, "One line node, containing one line text did not change")
+    def test_no_changes(self):
+        xmltexts = [
+            goodxml_text1,
+            goodxml_text2,
+            goodxml_text3,
+        ]
+        for xmltext in xmltexts:
+            # Surrounding whitespaces are ignored
+            xmltext = xmltext.strip()
+
+            output = str(str2xml(xmltext))
+            self.assertEqual(output, xmltext, "XMLs are identical\nOriginal:\n{}\nOutput:\n{}".format(xmltext, output))
+
+    def test_text_beautifying(self):
+        reference = reference_xml1.strip()
+        xmltexts = [
+            badxml_text1,
+            badxml_text2,
+            badxml_text3,
+        ]
+        for xmltext in xmltexts:
+            output = str(str2xml(xmltext))
+            self.assertEqual(output, reference, "XMLs are beautified\Reference:\n{}\nOutput:\n{}".format(reference, output))
 
 
 # Todo:
