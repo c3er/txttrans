@@ -82,13 +82,12 @@ class HTMLParser(_markupbase.ParserBase):
 
     CDATA_CONTENT_ELEMENTS = ("script", "style")
 
-    def __init__(self, *, convert_charrefs=True):
+    def __init__(self):
         """Initialize and reset this instance.
 
         If convert_charrefs is True (the default), all character references
         are automatically converted to the corresponding Unicode characters.
         """
-        self.convert_charrefs = convert_charrefs
         self.reset()
 
     def reset(self):
@@ -134,33 +133,15 @@ class HTMLParser(_markupbase.ParserBase):
         i = 0
         n = len(rawdata)
         while i < n:
-            if self.convert_charrefs and not self.cdata_elem:
-                j = rawdata.find('<', i)
-                if j < 0:
-                    # if we can't find the next <, either we are at the end
-                    # or there's more text incoming.  If the latter is True,
-                    # we can't pass the text to handle_data in case we have
-                    # a charref cut in half at end.  Try to determine if
-                    # this is the case before proceding by looking for an
-                    # & near the end and see if it's followed by a space or ;.
-                    amppos = rawdata.rfind('&', max(i, n-34))
-                    if (amppos >= 0 and
-                        not re.compile(r'[\s;]').search(rawdata, amppos)):
-                        break  # wait till we get all the text
-                    j = n
+            match = self.interesting.search(rawdata, i)  # < or &
+            if match:
+                j = match.start()
             else:
-                match = self.interesting.search(rawdata, i)  # < or &
-                if match:
-                    j = match.start()
-                else:
-                    if self.cdata_elem:
-                        break
-                    j = n
+                if self.cdata_elem:
+                    break
+                j = n
             if i < j:
-                if self.convert_charrefs and not self.cdata_elem:
-                    self.handle_data(unescape(rawdata[i:j]))
-                else:
-                    self.handle_data(rawdata[i:j])
+                self.handle_data(rawdata[i:j])
             i = self.updatepos(i, j)
             if i == n: break
             startswith = rawdata.startswith

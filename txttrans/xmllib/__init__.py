@@ -228,7 +228,7 @@ class XMLCommentNode(XMLNodeBase):
 
 class XMLReader(xmlparser.HTMLParser):
     def __init__(self):
-        super().__init__(convert_charrefs=False)
+        super().__init__()
         self.xml = XMLDocument()
         self.parent = None
         self._stack = []
@@ -428,6 +428,7 @@ class TestXMLTextHandling(unittest.TestCase):
 
 
 # Todo:
-# Appeareance of XML attributes...
+# - Char and entitiy references shall not be handled
+# - Appeareance of XML attributes...
 
 ################################################################################
