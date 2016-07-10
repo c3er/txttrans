@@ -290,16 +290,6 @@ class XMLReader(xmlparser.HTMLParser):
         if self.parent.name != tag:
             raise XMLError("Error at parsing (maybe a start tag without closing tag).")
         self.pop()
-
-    def handle_charref(self, name):
-        # Historical
-        print("handle_charref:", name)
-        raise NotImplementedError()
-
-    def handle_entityref(self, name):
-        # Historical
-        print("handle_entityref:", name)
-        raise NotImplementedError()
     ############################################################################
 
 

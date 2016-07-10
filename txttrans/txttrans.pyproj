@@ -33,12 +33,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="txttrans.py" />
-    <Compile Include="xmllib\entities.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="xmllib\main.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="xmllib\xmlparser.py">
       <SubType>Code</SubType>
     </Compile>

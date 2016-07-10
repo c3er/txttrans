@@ -12,11 +12,6 @@ import re
 import warnings
 import _markupbase
 
-try:
-    from main import unescape
-except ImportError:
-    from xmllib.main import unescape
-
 
 __all__ = ['HTMLParser']
 
@@ -393,13 +388,13 @@ class HTMLParser(_markupbase.ParserBase):
     def handle_endtag(self, tag):
         pass
 
-    # Overridable -- handle character reference
+    # Obsolete
     def handle_charref(self, name):
-        pass
-
-    # Overridable -- handle entity reference
+        raise NotImplementedError("charref: " + str(name))
+    
+    # Obsolete
     def handle_entityref(self, name):
-        pass
+        raise NotImplementedError("entityref: " + str(name))
 
     # Overridable -- handle data
     def handle_data(self, data):
@@ -419,10 +414,3 @@ class HTMLParser(_markupbase.ParserBase):
 
     def unknown_decl(self, data):
         pass
-
-    # Internal -- helper to remove special character quoting
-    def unescape(self, s):
-        warnings.warn('The unescape method is deprecated and will be removed '
-                      'in 3.5, use html.unescape() instead.',
-                      DeprecationWarning, stacklevel=2)
-        return unescape(s)
