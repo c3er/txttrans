@@ -47,7 +47,7 @@ class transform_handler:
     def __call__(self, func):
         def wrapper(event=None):
             try:
-                text = func(get_text())
+                text = func(_maintext.get())
                 if text is None:
                     raise Exception("Transform handler '{}' returned 'None'.".format(func.__name__))
                 _maintext.clipboard = text
@@ -84,14 +84,6 @@ class MainText:
 
     def set_focus(self):
         self.textbox.focus_set()
-
-
-def get_text():
-    return _maintext.get()
-
-
-def set_text(text):
-    _maintext.set(text)
 
 
 def create_button(parent, label, command):
