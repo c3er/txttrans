@@ -141,7 +141,7 @@ class HTMLParser(_markupbase.ParserBase):
                     break
                 j = n
             if i < j:
-                self.handle_data(rawdata[i:j])
+                self.handle_data(rawdata[i : j])
             i = self.updatepos(i, j)
             if i == n: break
             startswith = rawdata.startswith
@@ -172,18 +172,18 @@ class HTMLParser(_markupbase.ParserBase):
                     else:
                         k += 1
                     if self.convert_charrefs and not self.cdata_elem:
-                        self.handle_data(unescape(rawdata[i:k]))
+                        self.handle_data(unescape(rawdata[i : k]))
                     else:
-                        self.handle_data(rawdata[i:k])
+                        self.handle_data(rawdata[i : k])
                 i = self.updatepos(i, k)
             else:
                 assert 0, "interesting.search() lied"
         # end while
         if end and i < n and not self.cdata_elem:
             if self.convert_charrefs and not self.cdata_elem:
-                self.handle_data(unescape(rawdata[i:n]))
+                self.handle_data(unescape(rawdata[i : n]))
             else:
-                self.handle_data(rawdata[i:n])
+                self.handle_data(rawdata[i : n])
             i = self.updatepos(i, n)
         self.rawdata = rawdata[i:]
 
@@ -192,20 +192,20 @@ class HTMLParser(_markupbase.ParserBase):
     # See also parse_declaration in _markupbase
     def parse_html_declaration(self, i):
         rawdata = self.rawdata
-        assert rawdata[i:i+2] == '<!', ('unexpected call to '
+        assert rawdata[i : i + 2] == '<!', ('unexpected call to '
                                         'parse_html_declaration()')
-        if rawdata[i:i+4] == '<!--':
+        if rawdata[i : i + 4] == '<!--':
             # this case is actually already handled in goahead()
             return self.parse_comment(i)
-        elif rawdata[i:i+3] == '<![':
+        elif rawdata[i : i + 3] == '<![':
             return self.parse_marked_section(i)
-        elif rawdata[i:i+9].lower() == '<!doctype':
+        elif rawdata[i : i + 9].lower() == '<!doctype':
             # find the closing >
-            gtpos = rawdata.find('>', i+9)
+            gtpos = rawdata.find('>', i + 9)
             if gtpos == -1:
                 return -1
-            self.handle_decl(rawdata[i+2:gtpos])
-            return gtpos+1
+            self.handle_decl(rawdata[i + 2 : gtpos])
+            return gtpos + 1
         else:
             return self.parse_bogus_comment(i)
 
@@ -213,24 +213,24 @@ class HTMLParser(_markupbase.ParserBase):
     # see http://www.w3.org/TR/html5/tokenization.html#bogus-comment-state
     def parse_bogus_comment(self, i, report=1):
         rawdata = self.rawdata
-        assert rawdata[i:i+2] in ('<!', '</'), ('unexpected call to '
+        assert rawdata[i : i + 2] in ('<!', '</'), ('unexpected call to '
                                                 'parse_comment()')
-        pos = rawdata.find('>', i+2)
+        pos = rawdata.find('>', i + 2)
         if pos == -1:
             return -1
         if report:
-            self.handle_comment(rawdata[i+2:pos])
+            self.handle_comment(rawdata[i + 2 : pos])
         return pos + 1
 
     # Internal -- parse processing instr, return end or -1 if not terminated
     def parse_pi(self, i):
         rawdata = self.rawdata
-        assert rawdata[i:i+2] == '<?', 'unexpected call to parse_pi()'
-        match = piclose.search(rawdata, i+2) # >
+        assert rawdata[i : i + 2] == '<?', 'unexpected call to parse_pi()'
+        match = piclose.search(rawdata, i + 2) # >
         if not match:
             return -1
         j = match.start()
-        self.handle_pi(rawdata[i+2: j])
+        self.handle_pi(rawdata[i + 2: j])
         j = match.end()
         return j
 
@@ -241,11 +241,11 @@ class HTMLParser(_markupbase.ParserBase):
         if endpos < 0:
             return endpos
         rawdata = self.rawdata
-        self.__starttag_text = rawdata[i:endpos]
+        self.__starttag_text = rawdata[i : endpos]
 
         # Now parse the data between i+1 and j into a tag and attrs
         attrs = []
-        match = tagfind_tolerant.match(rawdata, i+1)
+        match = tagfind_tolerant.match(rawdata, i + 1)
         assert match, 'unexpected call to parse_starttag()'
         k = match.end()
         self.lasttag = tag = match.group(1).lower()
@@ -257,11 +257,11 @@ class HTMLParser(_markupbase.ParserBase):
             if not rest:
                 attrvalue = None
             elif attrvalue[:1] == '\'' == attrvalue[-1:] or attrvalue[:1] == '"' == attrvalue[-1:]:
-                attrvalue = attrvalue[1:-1]
+                attrvalue = attrvalue[1 : -1]
             attrs.append((attrname, attrvalue))
             k = m.end()
 
-        end = rawdata[k:endpos].strip()
+        end = rawdata[k : endpos].strip()
         if end not in (">", "/>"):
             lineno, offset = self.getpos()
             if "\n" in self.__starttag_text:
@@ -270,7 +270,7 @@ class HTMLParser(_markupbase.ParserBase):
                          - self.__starttag_text.rfind("\n")
             else:
                 offset = offset + len(self.__starttag_text)
-            self.handle_data(rawdata[i:endpos])
+            self.handle_data(rawdata[i : endpos])
             return endpos
         if end.endswith('/>'):
             # XHTML-style empty tag: <span attr="value" />
@@ -288,7 +288,7 @@ class HTMLParser(_markupbase.ParserBase):
         m = locatestarttagend_tolerant.match(rawdata, i)
         if m:
             j = m.end()
-            next = rawdata[j:j+1]
+            next = rawdata[j : j + 1]
             if next == ">":
                 return j + 1
             if next == "/":
@@ -319,22 +319,22 @@ class HTMLParser(_markupbase.ParserBase):
     # Internal -- parse endtag, return end or -1 if incomplete
     def parse_endtag(self, i):
         rawdata = self.rawdata
-        assert rawdata[i:i+2] == "</", "unexpected call to parse_endtag"
-        match = endendtag.search(rawdata, i+1) # >
+        assert rawdata[i : i + 2] == "</", "unexpected call to parse_endtag"
+        match = endendtag.search(rawdata, i + 1) # >
         if not match:
             return -1
         gtpos = match.end()
         match = endtagfind.match(rawdata, i) # </ + tag + >
         if not match:
             if self.cdata_elem is not None:
-                self.handle_data(rawdata[i:gtpos])
+                self.handle_data(rawdata[i : gtpos])
                 return gtpos
             # find the name: w3.org/TR/html5/tokenization.html#tag-name-state
-            namematch = tagfind_tolerant.match(rawdata, i+2)
+            namematch = tagfind_tolerant.match(rawdata, i + 2)
             if not namematch:
                 # w3.org/TR/html5/tokenization.html#end-tag-open-state
-                if rawdata[i:i+3] == '</>':
-                    return i+3
+                if rawdata[i : i + 3] == '</>':
+                    return i + 3
                 else:
                     return self.parse_bogus_comment(i)
             tagname = namematch.group(1).lower()
@@ -349,7 +349,7 @@ class HTMLParser(_markupbase.ParserBase):
         elem = match.group(1).lower() # script or style
         if self.cdata_elem is not None:
             if elem != self.cdata_elem:
-                self.handle_data(rawdata[i:gtpos])
+                self.handle_data(rawdata[i : gtpos])
                 return gtpos
 
         self.handle_endtag(elem.lower())
