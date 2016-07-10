@@ -26,6 +26,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="gui.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="transformers.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="txttrans.py" />
     <Compile Include="xmllib\entities.py">
       <SubType>Code</SubType>
