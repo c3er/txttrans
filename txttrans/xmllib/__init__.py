@@ -379,7 +379,16 @@ goodxmltext3 = '''\
     Line 3
 </root>
 '''
+goodxml_text4 = '''\
+<ROOT>
+    Line 1
+    Line 2
+    Line 3
+</ROOT>
+'''
+
 reference_xml1 = goodxml_text3
+
 badxml_text1 = '''\
 <root>Line 1
     Line 2
@@ -407,6 +416,7 @@ class TestXMLTextHandling(unittest.TestCase):
             goodxml_text1,
             goodxml_text2,
             goodxml_text3,
+            goodxml_text4,
         ]
         for xmltext in xmltexts:
             # Surrounding whitespaces are ignored
