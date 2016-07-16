@@ -226,7 +226,7 @@ class XMLCommentNode(XMLNodeBase):
         return "\n".join(line[minpos:] for line in lines)
 
 
-class XMLReader(xmlparser.HTMLParser):
+class XMLReader(xmlparser.XMLParser):
     def __init__(self):
         super().__init__()
         self.xml = XMLDocument()
@@ -417,6 +417,8 @@ class TestXMLTextHandling(unittest.TestCase):
             goodxml_text2,
             goodxml_text3,
             goodxml_text4,
+            '<root>&auml;</root>',
+            '<root attr="&auml;">&szlig;</root>'
         ]
         for xmltext in xmltexts:
             # Surrounding whitespaces are ignored
@@ -438,7 +440,6 @@ class TestXMLTextHandling(unittest.TestCase):
 
 
 # Todo:
-# - Char and entitiy references shall not be handled
 # - Appeareance of XML attributes...
 
 ################################################################################

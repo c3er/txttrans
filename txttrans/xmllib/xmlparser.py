@@ -14,7 +14,7 @@ import warnings
 import _markupbase
 
 
-__all__ = ['HTMLParser']
+__all__ = ['XMLParser']
 
 # Regular expressions used for parsing
 
@@ -26,7 +26,7 @@ piclose = re.compile('>')
 commentclose = re.compile(r'--\s*>')
 
 # Note:
-#  1) if you change tagfind/attrfind remember to update locatestarttagend too;
+#  1) if you change tagfind/attrfind remember to update locatestarttagend too
 #  2) if you change tagfind/attrfind and/or locatestarttagend the parser will
 #     explode, so don't do it.
 # see http://www.w3.org/TR/html5/tokenization.html#tag-open-state
@@ -62,11 +62,11 @@ endtagfind = re.compile('</\s*([a-zA-Z][-.a-zA-Z0-9:_]*)\s*>')
 
 
 
-class HTMLParser(_markupbase.ParserBase):
+class XMLParser(_markupbase.ParserBase):
     """Find tags and other markup and call handler functions.
 
     Usage:
-        p = HTMLParser()
+        p = XMLParser()
         p.feed(data)
         ...
         p.close()
