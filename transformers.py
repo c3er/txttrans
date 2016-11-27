@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 
-import gui
-
 import json
 import collections
+
+import gui
 
 import xmllib
 
@@ -24,3 +24,16 @@ def beautify_json(text):
 @gui.transform_handler("Beautify XML")
 def beautify_xml(text):
     return str(xmllib.str2xml(text))
+
+
+@gui.transform_handler("Say Hello")
+def say_hello(text):
+    entries = [
+        gui.DataEntry("Forename"),
+        gui.DataEntry("Surname", "Jones")
+    ]
+    sdd = gui.SimpleDataDialog("Hello", entries)
+    result = sdd.result
+    if sdd.result:
+        return "Hello {} {}".format(result["Forename"], result["Surname"])
+    return text
