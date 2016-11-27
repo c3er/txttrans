@@ -287,7 +287,7 @@ class XMLReader(xmlparser.XMLParser):
             self.xml.add_node(node)
 
     def handle_endtag(self, tag):
-        if self.parent.name != tag:
+        if not self.parent or self.parent.name != tag:
             raise XMLError("Error at parsing (maybe a start tag without closing tag).")
         self.pop()
     ############################################################################

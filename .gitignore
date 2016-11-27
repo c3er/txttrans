@@ -23,6 +23,7 @@ _ReSharper*/
 
 # VS Code
 .vscode/
+tags
 
 # Python specific
 __pycache__/

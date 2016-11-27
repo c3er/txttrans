@@ -105,11 +105,11 @@ class XMLParser(_markupbase.ParserBase):
         as you want (may include '\n').
         """
         self.rawdata = self.rawdata + data
-        self.goahead(0)
+        self._goahead(0)
 
     def close(self):
         """Handle any buffered data."""
-        self.goahead(1)
+        self._goahead(1)
 
     __starttag_text = None
 
@@ -128,7 +128,7 @@ class XMLParser(_markupbase.ParserBase):
     # Internal -- handle data as far as reasonable.  May leave state
     # and data to be processed by a subsequent call.  If 'end' is
     # true, force handling all data as if followed by EOF marker.
-    def goahead(self, end):
+    def _goahead(self, end):
         rawdata = self.rawdata
         startswith = rawdata.startswith  # Optimization
         curpos = 0
@@ -197,7 +197,7 @@ class XMLParser(_markupbase.ParserBase):
         assert rawdata[startpos : startpos + 2] == '<!', ('unexpected call to '
                                         'parse_html_declaration()')
         if rawdata[startpos : startpos + 4] == '<!--':
-            # this case is actually already handled in goahead()
+            # this case is actually already handled in _goahead()
             return self.parse_comment(startpos)
         elif rawdata[startpos : startpos + 3] == '<![':
             return self.parse_marked_section(startpos)
