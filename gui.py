@@ -237,17 +237,17 @@ class SimpleDataDialog(_DialogBase):
 
     def body(self, master):
         frame = ttk.Frame(self)
-        labeledentries = [self._labeled_entry(frame, entry.label, entry.default) for entry in self.entries]
-        for entry, widget in zip(self.entries, labeledentries):
+        entrywidgets = [self._labeled_entry(frame, entry.label, entry.default) for entry in self.entries]
+        for entry, widget in zip(self.entries, entrywidgets):
             entry.widget = widget
         frame.pack(side='top', padx=2, pady=2, fill='x')
-        return labeledentries[0]
+        return entrywidgets[0]
 
     def validate(self):
-        failed = False
+        succeeded = True
         for entry in self.entries:
-            failed = entry.validate() or failed
-        return failed
+            succeeded = entry.validate() and succeeded
+        return succeeded
 
     def apply(self):
         self.result = {}

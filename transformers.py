@@ -29,7 +29,7 @@ def beautify_xml(text):
 @gui.transform_handler("Say Hello")
 def say_hello(text):
     entries = [
-        gui.DataEntry("Forename"),
+        gui.DataEntry("Forename", validator=lambda value: value == "Tom"),
         gui.DataEntry("Surname", "Jones")
     ]
     sdd = gui.SimpleDataDialog("Hello", entries)
