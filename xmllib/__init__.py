@@ -263,7 +263,7 @@ class XMLReader(xmlparser.XMLParser):
         self.parent = self._stack.pop()
     ############################################################################
 
-    # Inherited from html.parser.HTMLParser ####################################
+    # Inherited from xmllib.xmlparser.XMLParser ################################
     def handle_decl(self, decl):
         self.set_doctype(decl, "!")
 
