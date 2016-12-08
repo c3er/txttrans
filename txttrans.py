@@ -30,8 +30,10 @@ def main_area(parent):
     _textbox = gui.init_textbox(frame)
     return frame
 
+################################################################################
 
-def init_gui():
+
+def main():
     root = tkinter.Tk()
     root.wm_title("Text Transformator")
     root.geometry(WINDOW_SIZE)
@@ -39,12 +41,6 @@ def init_gui():
     toolbar(root).pack(anchor="n", fill="x")
     main_area(root).pack(fill="both", expand=True)
 
-    return root
-
-################################################################################
-
-def main():
-    root = init_gui()
     root.mainloop()
 
 

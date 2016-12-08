@@ -1,6 +1,4 @@
-# Introduction
-
-A tool that can transform ASCII text with help PYthon code.
+A tool that can transform ASCII text with help Python code.
 
 # Usage
 

@@ -12,7 +12,8 @@ import xmllib
 
 @gui.transform_handler("Help")
 def help(text):
-    return "XXX Write help text."
+    with open("README.md", encoding="utf8") as f:
+        return f.read()
 
 
 @gui.transform_handler("Beatify JSON")

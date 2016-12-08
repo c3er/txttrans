@@ -206,6 +206,11 @@ class XMLCommentNode(XMLNodeBase):
 
     @staticmethod
     def _startpos(line):
+        """Returns the index of the first non whitespace character.
+        If the line consists of whitespaes only, the whole line length will be
+        returned. This behavior is needed to determine the minimum indentation
+        of the given text.
+        """
         for i, char in enumerate(line):
             if char not in string.whitespace:
                 return i

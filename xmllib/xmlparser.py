@@ -268,8 +268,7 @@ class XMLParser(_markupbase.ParserBase):
             lineno, offset = self.getpos()
             if "\n" in self.__starttag_text:
                 lineno = lineno + self.__starttag_text.count("\n")
-                offset = len(self.__starttag_text) \
-                         - self.__starttag_text.rfind("\n")
+                offset = len(self.__starttag_text) - self.__starttag_text.rfind("\n")
             else:
                 offset = offset + len(self.__starttag_text)
             self.handle_data(rawdata[startpos : endpos])
@@ -340,11 +339,13 @@ class XMLParser(_markupbase.ParserBase):
                 else:
                     return self.parse_bogus_comment(startpos)
             tagname = namematch.group(1)
+
             # consume and ignore other stuff between the name and the >
             # Note: this is not 100% correct, since we might have things like
             # </tag attr=">">, but looking for > after tha name should cover
             # most of the cases and is much simpler
             endpos = rawdata.find('>', namematch.end())
+            
             self.handle_endtag(tagname)
             return endpos + 1
 

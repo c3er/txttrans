@@ -66,31 +66,33 @@ class _DialogBase(tkinter.Toplevel):
         self.wait_window(self)
 
     def close(self, event = None):
-        '''Give focus back to the parent window and close the dialog.'''
+        """Give focus back to the parent window and close the dialog."""
         self.parent.focus_set()
         self.destroy()
 
     # Methods to overwrite #####################################################
     def body(self, master):
-        '''Create dialog
+        """Create dialog
         Returns a widget, which should have the focus immediatly. This method
         should be overwritten.
-        '''
+        """
         pass
 
     def buttonbox(self):
-        '''Add standard button box
+        """Add standard button box
         Overwrite, if there are no standard buttons wanted.
-        '''
+        """
         box = ttk.Frame(self)
 
-        ttk.Button(box,
-            text="Abbrechen",
+        ttk.Button(
+            box,
+            text="Cancel",
             width=10,
             command=self.cancel
         ).pack(side='right', padx=5, pady=5)
 
-        ttk.Button(box,
+        ttk.Button(
+            box,
             text="OK",
             width=10,
             command=self.ok,
@@ -103,11 +105,11 @@ class _DialogBase(tkinter.Toplevel):
 
     # Standard button behavior ###
     def ok(self, event = None):
-        '''Execute the validate function and if it returns False, it will just
+        """Execute the validate function and if it returns False, it will just
         set the focus right and return.
         If validate returns True, then the apply function will be called and the
         dialog will be closed.
-        '''
+        """
         if not self.validate():
             self.initial_focus.focus_set()
             return
@@ -117,24 +119,24 @@ class _DialogBase(tkinter.Toplevel):
         self.close()
 
     def cancel(self, event = None):
-        '''Performs an Abortion of the dialog.'''
+        """Performs an Abortion of the dialog."""
         self.canceled = True
         self.close(event)
     ###
 
     # Command hooks ###
     def validate(self):
-        '''Overwrite.
+        """Overwrite.
         Validate the input. If the function returns false, the dialog will stay
         open.
-        '''
+        """
         return True
 
     def apply(self):
-        '''Overwrite.
+        """Overwrite.
         Process the input. This function will be called, after the dialog was
         closed.
-        '''
+        """
         pass
     ###
     ############################################################################
