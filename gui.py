@@ -248,7 +248,10 @@ class SimpleDataDialog(_DialogBase):
     def validate(self):
         succeeded = True
         for entry in self.entries:
-            succeeded = entry.validate() and succeeded
+            entrysuccess = entry.validate()
+            if not entrysuccess:
+                print('Validation failed on entry "{}"'.format(entry.label))
+            succeeded = entrysuccess and succeeded
         return succeeded
 
     def apply(self):
