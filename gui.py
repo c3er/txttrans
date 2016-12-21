@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
+import traceback
+
 import tkinter
 import tkinter.ttk as ttk
 
+import message
 import misc
 
 
@@ -156,6 +159,7 @@ class transform_handler:
 
     def __call__(self, func):
         def wrapper(event=None):
+            message.info('Transform handler "{}" called'.format(self.label))
             try:
                 text = func(_maintext.get())
                 if text is None:
@@ -169,6 +173,12 @@ class transform_handler:
 
 
 # Helpers ######################################################################
+
+class App(tkinter.Tk):
+    def report_callback_exception(self, exc, val, tb):
+        msg = traceback.format_exception(exc, val, tb)
+        message.error("Exception occured:", ''.join(msg))
+
 
 class MainText:
     def __init__(self, parent):
@@ -250,7 +260,7 @@ class SimpleDataDialog(_DialogBase):
         for entry in self.entries:
             entrysuccess = entry.validate()
             if not entrysuccess:
-                print('Validation failed on entry "{}"'.format(entry.label))
+                message.error('Validation failed on entry "{}"'.format(entry.label))
             succeeded = entrysuccess and succeeded
         return succeeded
 

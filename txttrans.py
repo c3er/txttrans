@@ -6,7 +6,10 @@ import tkinter
 import tkinter.ttk as ttk
 
 import gui
+import message
 import transformers
+
+from misc import curry
 
 
 WINDOW_SIZE = "800x700"
@@ -33,10 +36,17 @@ def main_area(parent):
 ################################################################################
 
 
+def appclose_callback(root):
+    message.info("Quitting")
+    root.destroy()
+
+
 def main():
-    root = tkinter.Tk()
+    root = gui.App()
     root.wm_title("Text Transformator")
     root.geometry(WINDOW_SIZE)
+    root.bind("<Alt-F4>", lambda event: appclose_callback(root))
+    root.protocol('WM_DELETE_WINDOW', curry(appclose_callback, root))
 
     toolbar(root).pack(anchor="n", fill="x")
     main_area(root).pack(fill="both", expand=True)
