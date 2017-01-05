@@ -261,7 +261,7 @@ class SimpleDataDialog(_DialogBase):
             entrysuccess = entry.validate()
             if not entrysuccess:
                 message.error('Validation failed on entry "{}"'.format(entry.label))
-            succeeded = entrysuccess and succeeded
+            succeeded = succeeded and entrysuccess
         return succeeded
 
     def apply(self):
@@ -284,7 +284,7 @@ class SimpleDataDialog(_DialogBase):
         entry.insert(0, text)
 
 
-def init_textbox(parent):
+def init_maintext(parent):
     global _maintext
     global _root
     _root = parent

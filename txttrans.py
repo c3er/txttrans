@@ -28,15 +28,14 @@ def toolbar(parent):
 
 
 def main_area(parent):
-    global _textbox
     frame = ttk.Frame(parent)
-    _textbox = gui.init_textbox(frame)
+    gui.init_maintext(frame)
     return frame
 
 ################################################################################
 
 
-def appclose_callback(root):
+def close_app(root):
     message.info("Quitting")
     root.destroy()
 
@@ -45,8 +44,8 @@ def main():
     root = gui.App()
     root.wm_title("Text Transformator")
     root.geometry(WINDOW_SIZE)
-    root.bind("<Alt-F4>", lambda event: appclose_callback(root))
-    root.protocol('WM_DELETE_WINDOW', curry(appclose_callback, root))
+    root.bind("<Alt-F4>", lambda event: close_app(root))
+    root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
 
     toolbar(root).pack(anchor="n", fill="x")
     main_area(root).pack(fill="both", expand=True)
