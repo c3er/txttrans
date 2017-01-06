@@ -208,7 +208,7 @@ class MainText:
 
 def create_button(parent, label, command):
     button = ttk.Button(parent, text=label, command=command)
-    button.pack(side='left')
+    button.pack(side='left', fill="x", expand=True)
     return button
 
 
@@ -225,12 +225,11 @@ def setup_scrollbars(container, widget):
 
 class DataEntry:
     def __init__(self, label, default="", validator=None):
-        def dummy_validator(value):
-            return True
+        dummy_validator = lambda value: True
         self.label = label
+        self.default = default
         self.validator = validator if validator else dummy_validator
         self.widget = None
-        self.default = default
 
     @property
     def value(self):
