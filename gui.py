@@ -7,6 +7,7 @@ import traceback
 import tkinter
 import tkinter.ttk as ttk
 
+import guilib
 import message
 import misc
 
@@ -174,7 +175,7 @@ class transform_handler:
 
 # Helpers ######################################################################
 
-class App(tkinter.Tk):
+class MainWindow(tkinter.Tk):
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
         message.error("Exception occured:", ''.join(msg))
@@ -183,7 +184,7 @@ class App(tkinter.Tk):
 class MainText:
     def __init__(self, parent):
         self.textbox = tkinter.Text(parent)
-        setup_scrollbars(parent, self.textbox)
+        guilib.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
 
     @property
@@ -204,23 +205,6 @@ class MainText:
 
     def set_focus(self):
         self.textbox.focus_set()
-
-
-def create_button(parent, label, command):
-    button = ttk.Button(parent, text=label, command=command)
-    button.pack(side='left', fill="x", expand=True)
-    return button
-
-
-def setup_scrollbars(container, widget):
-    vsb = AutoScrollbar(container, orient="vertical", command=widget.yview)
-    widget.configure(yscrollcommand=vsb.set)
-
-    widget.grid(column=0, row=0, sticky='nsew', in_=container)
-    vsb.grid(column=1, row=0, sticky='ns')
-
-    container.grid_columnconfigure(0, weight=1)
-    container.grid_rowconfigure(0, weight=1)
 
 
 class DataEntry:
@@ -288,5 +272,11 @@ def init_maintext(parent):
     global _root
     _root = parent
     _maintext = MainText(parent)
+
+
+def create_button(parent, label, command):
+    button = ttk.Button(parent, text=label, command=command)
+    button.pack(side='left', fill="x", expand=True)
+    return button
 
 ################################################################################

@@ -32,6 +32,12 @@ def main_area(parent):
     gui.init_maintext(frame)
     return frame
 
+
+def message_area(parent):
+    frame = ttk.Frame(parent)
+    message.init(frame)
+    return frame
+
 ################################################################################
 
 
@@ -41,7 +47,7 @@ def close_app(root):
 
 
 def main():
-    root = gui.App()
+    root = gui.MainWindow()
     root.wm_title("Text Transformator")
     root.geometry(WINDOW_SIZE)
     root.bind("<Alt-F4>", lambda event: close_app(root))
@@ -49,7 +55,10 @@ def main():
 
     toolbar(root).pack(anchor="n", fill="x")
     main_area(root).pack(fill="both", expand=True)
+    message_area(root).pack(fill="both", expand=True)
 
+    message.info("Initialized")
+    
     root.mainloop()
 
 
