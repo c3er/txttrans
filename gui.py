@@ -21,24 +21,6 @@ transformers = []
 
 # Stolen from some demos #######################################################
 
-class AutoScrollbar(ttk.Scrollbar):
-    """A scrollbar that hides it self if it's not needed.
-    Only works if you use the grid geometry manager.
-    """
-    def set(self, lo, hi):
-        if float(lo) <= 0.0 and float(hi) >= 1.0:
-            self.grid_remove()
-        else:
-            self.grid()
-        super().set(lo, hi)
-
-    def pack(self, **kw):
-        raise tkinter.TclError("Can not use pack with this widget")
-
-    def place(self, **kw):
-        raise tkinter.TclError("Can not use place with this widget")
-
-
 class _DialogBase(tkinter.Toplevel):
     def __init__(self, parent, title = None):
         'Must be called after initialization of inheriting classes.'
