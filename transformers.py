@@ -39,3 +39,8 @@ def say_hello(text):
     if sdd.result:
         return "Hello {} {}".format(result["Forename"], result["Surname"])
     return text
+
+
+@gui.transform_handler("Raise exception")
+def raise_exception(text):
+    raise Exception(":-P")
