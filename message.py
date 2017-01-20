@@ -16,10 +16,11 @@ _handler = None
 class MessageHandler:
     def __init__(self, parent):
         self.textbox = tkinter.Text(parent)
-        guilib.setup_scrollbars(parent, self.textbox)
+        self.scrollbar = guilib.setup_scrollbars(parent, self.textbox)
 
     def write(self, msg):
         self.textbox.insert("end", str(msg) + "\n")
+        self.textbox.yview("end")
 
 
 class MessageLevel(enum.Enum):
