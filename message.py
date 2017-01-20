@@ -16,10 +16,13 @@ _handler = None
 class MessageHandler:
     def __init__(self, parent):
         self.textbox = tkinter.Text(parent)
-        self.scrollbar = guilib.setup_scrollbars(parent, self.textbox)
+        self.textbox.config(state="disabled")
+        guilib.setup_scrollbars(parent, self.textbox)
 
     def write(self, msg):
+        self.textbox.config(state="normal")
         self.textbox.insert("end", str(msg) + "\n")
+        self.textbox.config(state="disabled")
         self.textbox.yview("end")
 
 
