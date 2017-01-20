@@ -26,7 +26,7 @@ class MessageHandler:
         self.textbox.yview("end")
 
 
-class MessageLevel(enum.Enum):
+class Level(enum.Enum):
     invalid = 0
     debug   = 1
     info    = 2
@@ -50,12 +50,12 @@ def init(parent):
 
 
 def info(*args, sep=" "):
-    _handler.write(Message(MessageLevel.info, *args, sep=sep))
+    _handler.write(Message(Level.info, *args, sep=sep))
 
 
 def warn(*args, sep=" "):
-    _handler.write(Message(MessageLevel.warning, *args, sep=sep))
+    _handler.write(Message(Level.warning, *args, sep=sep))
 
 
 def error(*args, sep=" "):
-    _handler.write(Message(MessageLevel.error, *args, sep=sep))
+    _handler.write(Message(Level.error, *args, sep=sep))
