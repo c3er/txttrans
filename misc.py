@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import sys
 import collections
 
 
@@ -18,3 +19,7 @@ class curry:
 
 def islistlike(listobj):
     return isinstance(listobj, (list, tuple, collections.UserList))
+
+
+def getstarterdir():
+    return getscriptpath(sys.argv[0])
