@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import os
 import sys
 import collections
 
@@ -23,3 +24,7 @@ def islistlike(listobj):
 
 def getstarterdir():
     return getscriptpath(sys.argv[0])
+
+
+def getscriptpath(script):
+    return os.path.dirname(os.path.realpath(script))

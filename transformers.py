@@ -2,17 +2,20 @@
 # -*- coding: utf-8 -*-
 
 
+import os
 import json
 import collections
 
 import gui
+import info
 
 import xmllib
 
 
 @gui.transform_handler("Help")
 def help(text):
-    with open("README.md", encoding="utf8") as f:
+    readmepath = os.path.join(info.execdir, "README.md")
+    with open(readmepath, encoding="utf8") as f:
         return f.read()
 
 
