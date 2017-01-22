@@ -39,7 +39,7 @@ def say_hello(text):
     ]
     sdd = gui.SimpleDataDialog("Hello", entries)
     result = sdd.result
-    if sdd.result:
+    if result:
         return "Hello {} {}".format(result["Forename"], result["Surname"])
     return text
 
