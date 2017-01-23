@@ -2,99 +2,54 @@
 # -*- coding: utf-8 -*-
 
 
-try:
-    import tkinter
-    import tkinter.ttk as ttk
-
-    import gui
-    import message
-    import transformers
-
-    from misc import curry
+import traceback
+import tkinter
+import tkinter.ttk as ttk
 
 
-    MAINWINDOW_SIZE = "800x700"
+ERRORWINDOW_SIZE = "800x600"
 
 
-    # GUI initialization #######################################################
+class ErrorHandler:
+    def __init__(self, parent, tb):
+        self.textbox = tkinter.Text(parent)
+        setup_scrollbars(parent, self.textbox)
 
-    def toolbar(parent):
-        frame = ttk.Frame(parent)
-        for i, t in enumerate(gui.transformers):
-            fkey_str = "F" + str(i + 1)
-            label = "[{}] {}".format(fkey_str, t.label)
-            parent.bind("<{}>".format(fkey_str), t.handler)
-            gui.create_button(frame, label, t.handler)
-        return frame
-
-
-    def main_area(parent):
-        frame = ttk.Frame(parent)
-        gui.init_maintext(frame)
-        return frame
-
-
-    def message_area(parent):
-        frame = ttk.Frame(parent)
-        message.init(frame)
-        return frame
-
-    ############################################################################
-
-
-    def close_app(root):
-        message.info("Quitting")
-        root.destroy()
-
-
-    def main():
-        root = gui.MainWindow()
-        root.wm_title("Text Transformator")
-        root.geometry(MAINWINDOW_SIZE)
-        root.bind("<Alt-F4>", lambda event: close_app(root))
-        root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
-
-        toolbar(root).pack(anchor="n", fill="x")
-        main_area(root).pack(fill="both", expand=True)
-        message_area(root).pack(fill="both", expand=True)
-
-        message.info("Initialized")
+        self.textbox.insert("end", tb)
         
-        root.mainloop()
+        self.textbox.config(state="disabled")
+        self.textbox.yview("end")
 
 
-    if __name__ == "__main__":
-        main()
+def setup_scrollbars(container, widget):
+    vsb = ttk.Scrollbar(container, orient="vertical", command=widget.yview)
+    widget.configure(yscrollcommand=vsb.set)
+
+    widget.grid(column=0, row=0, sticky='nsew', in_=container)
+    vsb.grid(column=1, row=0, sticky='ns')
+
+    container.grid_columnconfigure(0, weight=1)
+    container.grid_rowconfigure(0, weight=1)
 
 
-except:
-    # XXX Not all errors are catched by this, e.g. IndentationError.
-    # If errors are not catched by this, it will just not start and does not display any messages.
+def message_area(parent, tb):
+    frame = ttk.Frame(parent)
+    ErrorHandler(frame, tb)
+    return frame
 
-    if __name__ != "__main__":
-        raise
 
-    import tkinter
-    import traceback
-
-    # XXX Errors in this module my lead the message window to be not displayed
-    # (starting will fail silently)
-    import message
-
-    ERRORWINDOW_SIZE = "800x600"
-
-    def message_area(parent):
-        frame = ttk.Frame(parent)
-        message.init(frame)
-        return frame
-
-    def errorwindow():
+def main():
+    try:
+        import main
+        main.main()
+    except:
+        tb = traceback.format_exc()
         root = tkinter.Tk()
         root.wm_title("Error")
         root.geometry(ERRORWINDOW_SIZE)
-        message_area(root).pack(fill="both", expand=True)
-        message.error(traceback.format_exc())
+        message_area(root, tb).pack(fill="both", expand=True)
         root.mainloop()
 
-    errorwindow()
-    raise
+
+if __name__ == "__main__":
+    main()
