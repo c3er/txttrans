@@ -190,11 +190,10 @@ class MainText:
 
 
 class DataEntry:
-    def __init__(self, label, default="", validator=None):
-        dummy_validator = lambda value: True
+    def __init__(self, label, default="", validator=lambda value: True):
         self.label = label
         self.default = default
-        self.validator = validator if validator else dummy_validator
+        self.validator = validator
         self.widget = None
 
     @property

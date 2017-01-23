@@ -47,3 +47,8 @@ def say_hello(text):
 @gui.transform_handler("Raise exception")
 def raise_exception(text):
     raise Exception(":-P")
+
+
+@gui.transform_handler("Return None")
+def return_none(text):
+    return None

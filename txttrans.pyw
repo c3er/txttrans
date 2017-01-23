@@ -16,7 +16,7 @@ class ErrorHandler:
         setup_scrollbars(parent, self.textbox)
 
         self.textbox.insert("end", tb)
-        
+
         self.textbox.config(state="disabled")
         self.textbox.yview("end")
 
@@ -49,6 +49,7 @@ def main():
         root.geometry(ERRORWINDOW_SIZE)
         message_area(root, tb).pack(fill="both", expand=True)
         root.mainloop()
+        raise
 
 
 if __name__ == "__main__":
