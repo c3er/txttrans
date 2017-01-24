@@ -70,7 +70,7 @@ class Popup:
         
     def dispatch(self, label):
         """Calls the handler.
-        The event that is given to the handler is the appeareance of the menu
+        The event that is given to the handler is the appearance of the menu
         and not the actual call of the menu item.
         """
         self.handlers[label](self.lastevent)
