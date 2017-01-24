@@ -5,6 +5,9 @@ import tkinter
 import tkinter.ttk as ttk
 
 import gui
+import gui.lib
+import gui.menu
+
 import message
 import transformers
 
@@ -24,6 +27,15 @@ def toolbar(parent):
         parent.bind("<{}>".format(fkey_str), t.handler)
         gui.create_button(frame, label, t.handler)
     return frame
+
+
+def menubar(parent):
+    mainmenu = gui.menu.Menu(parent)
+    menu = mainmenu.add_submenu("Transform handlers")
+    for i, t in enumerate(gui.transformers):
+        fkey_str = "F" + str(i + 1)
+        parent.bind("<{}>".format(fkey_str), t.handler)
+        menu.add_item(t.label, t.handler, accelerator=fkey_str)
 
 
 def main_area(parent):
@@ -52,7 +64,8 @@ def main():
     root.bind("<Alt-F4>", lambda event: close_app(root))
     root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
 
-    toolbar(root).pack(anchor="n", fill="x")
+    menubar(root)
+    #toolbar(root).pack(anchor="n", fill="x")
     main_area(root).pack(fill="both", expand=True)
     message_area(root).pack(fill="both", expand=True)
 
