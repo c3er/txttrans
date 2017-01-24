@@ -19,14 +19,19 @@ MAINWINDOW_SIZE = "800x700"
 
 # GUI initialization ###########################################################
 
-def menubar(parent):
-    mainmenu = gui.menu.Menu(parent)
-    menu = mainmenu.add_submenu("Transform handlers")
+def create_menus(parent):
+    menubar = gui.menu.Menu(parent)
+    mainmenu = menubar.add_submenu("Transform handlers")
+
+    popup = gui.menu.Popup(parent)
+
     for i, t in enumerate(gui.transformers):
         fkey_str = "F" + str(i + 1)
         parent.bind("<{}>".format(fkey_str), t.handler)
-        menu.add_item(t.label, t.handler, accelerator=fkey_str)
-
+        mainmenu.add_item(t.label, t.handler, accelerator=fkey_str)
+        popup.add_entry(t.label, t.handler, fkey_str)
+        
+    parent.bind('<Button-3>', popup.display)
 
 def main_area(parent):
     frame = ttk.Frame(parent)
@@ -54,7 +59,7 @@ def main():
     root.bind("<Alt-F4>", lambda event: close_app(root))
     root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
 
-    menubar(root)
+    create_menus(root)
     main_area(root).pack(fill="both", expand=True)
     message_area(root).pack(fill="both", expand=True)
 

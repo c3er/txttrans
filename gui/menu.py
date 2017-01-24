@@ -4,6 +4,8 @@
 
 import tkinter
 
+from misc import curry
+
 
 class Menu:
     """Wrapper class over the tkinter.Menu class to add needed features
@@ -55,3 +57,38 @@ class MenuItem:
         self.parent = parent
         self.label = label
         self.command = command
+
+        
+class Popup:
+    """Also called "context menu". A menu that shall appear at the location of
+    the mouse pointer.
+    """
+    def __init__(self, frame):
+        self.menu = tkinter.Menu(frame, tearoff=0)
+        self.lastevent = None
+        self.handlers = {}
+        
+    def dispatch(self, label):
+        self.handlers[label](self.lastevent)
+    
+    def display(self, event):
+        """The handler, which shall be bound to the right mouse button.
+        (TK name: <Button-3>)
+        """
+        event.widget.focus_set()
+        try:
+            self.menu.post(event.x_root, event.y_root)
+        finally:
+            self.menu.grab_release()
+        self.lastevent = event
+    
+    def add_entry(self, label, handler, accelerator=None):
+        self.handlers[label] = handler
+        self.menu.add_command(
+            label=label,
+            command=curry(self.dispatch, label),
+            accelerator=accelerator
+        )
+    
+    def add_seperator(self):
+        self.menu.add_separator()
