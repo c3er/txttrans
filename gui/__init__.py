@@ -254,10 +254,4 @@ def init_maintext(parent):
     _root = parent
     _maintext = MainText(parent)
 
-
-def create_button(parent, label, command):
-    button = ttk.Button(parent, text=label, command=command)
-    button.pack(side='left', fill="x", expand=True)
-    return button
-
 ################################################################################
