@@ -7,7 +7,7 @@ import enum
 
 import tkinter
 
-import guilib
+import gui.lib
 
 
 _handler = None
@@ -17,7 +17,7 @@ class MessageHandler:
     def __init__(self, parent):
         self.textbox = tkinter.Text(parent)
         self.textbox.config(state="disabled")
-        guilib.setup_scrollbars(parent, self.textbox)
+        gui.lib.setup_scrollbars(parent, self.textbox)
 
     def write(self, msg):
         self.textbox.config(state="normal")

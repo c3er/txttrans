@@ -7,7 +7,7 @@ import traceback
 import tkinter
 import tkinter.ttk as ttk
 
-import guilib
+import gui.lib
 import message
 import misc
 
@@ -166,7 +166,7 @@ class MainWindow(tkinter.Tk):
 class MainText:
     def __init__(self, parent):
         self.textbox = tkinter.Text(parent)
-        guilib.setup_scrollbars(parent, self.textbox)
+        gui.lib.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
 
     @property
