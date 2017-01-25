@@ -61,9 +61,12 @@ def main():
 
     create_menus(root)
     main_area(root).pack(fill="both", expand=True)
-    message_area(root).pack(fill="both", expand=True)
+    message_area(root).pack(fill="both")
 
+    message.debug("Initialized")
     message.info("Initialized")
+    message.warn("Initialized")
+    message.error("Initialized")
 
     root.mainloop()
 

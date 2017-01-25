@@ -9,3 +9,5 @@ fontsize = 10
 # Message area
 messagefont = "Consolas"
 messagefontsize = 9
+
+debug = True

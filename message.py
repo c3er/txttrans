@@ -4,7 +4,6 @@
 
 import sys
 import enum
-
 import tkinter
 
 import gui.lib
@@ -19,16 +18,24 @@ class MessageHandler:
     def __init__(self, parent):
         self.textbox = tkinter.Text(
             parent,
-            font=(config.messagefont, config.messagefontsize, 'normal')
+            font=(config.messagefont, config.messagefontsize, 'normal'),
+            background="black"
         )
         self.textbox.config(state="disabled")
         gui.lib.setup_scrollbars(parent, self.textbox)
+        self._configcolors()
 
     def write(self, msg):
         self.textbox.config(state="normal")
-        self.textbox.insert("end", str(msg) + "\n")
+        self.textbox.insert("end", str(msg) + "\n", str(msg.level))
         self.textbox.config(state="disabled")
         self.textbox.yview("end")
+
+    def _configcolors(self):
+        self.textbox.tag_config(str(Level.debug), foreground="grey")
+        self.textbox.tag_config(str(Level.info), foreground="lightgrey")
+        self.textbox.tag_config(str(Level.warning), foreground="orange")
+        self.textbox.tag_config(str(Level.error), foreground="orangered")
 
 
 class Level(enum.Enum):
@@ -40,8 +47,8 @@ class Level(enum.Enum):
 
 
 class Message:
-    def __init__(self, msgtype, *args, sep=" "):
-        self.type = msgtype
+    def __init__(self, msglevel, *args, sep=" "):
+        self.level = msglevel
         self.parts = args
         self.separator = sep
 
@@ -52,6 +59,11 @@ class Message:
 def init(parent):
     global _handler
     _handler = MessageHandler(parent)
+
+
+def debug(*args, sep=" "):
+    if config.debug:
+        _handler.write(Message(Level.debug, *args, sep=sep))
 
 
 def info(*args, sep=" "):

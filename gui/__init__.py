@@ -229,7 +229,7 @@ class SimpleDataDialog(_DialogBase):
         for entry in self.entries:
             entrysuccess = entry.validate()
             if not entrysuccess:
-                message.error('Validation failed on entry "{}"'.format(entry.label))
+                message.warn('Validation failed on entry "{}"'.format(entry.label))
             succeeded = succeeded and entrysuccess
         return succeeded
 
