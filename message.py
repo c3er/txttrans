@@ -9,13 +9,18 @@ import tkinter
 
 import gui.lib
 
+import config
+
 
 _handler = None
 
 
 class MessageHandler:
     def __init__(self, parent):
-        self.textbox = tkinter.Text(parent)
+        self.textbox = tkinter.Text(
+            parent,
+            font=(config.messagefont, config.messagefontsize, 'normal')
+        )
         self.textbox.config(state="disabled")
         gui.lib.setup_scrollbars(parent, self.textbox)
 

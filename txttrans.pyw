@@ -12,7 +12,12 @@ ERRORWINDOW_SIZE = "800x600"
 
 class ErrorHandler:
     def __init__(self, parent, tb):
-        self.textbox = tkinter.Text(parent)
+        self.textbox = tkinter.Text(
+            parent,
+            font=("Consolas", 10, 'normal'),
+            background="black",
+            foreground="orange"
+        )
         setup_scrollbars(parent, self.textbox)
 
         self.textbox.insert("end", tb)

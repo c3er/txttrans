@@ -11,6 +11,8 @@ import gui.lib
 import message
 import misc
 
+import config
+
 
 _root = None
 _maintext = None
@@ -165,7 +167,10 @@ class MainWindow(tkinter.Tk):
 
 class MainText:
     def __init__(self, parent):
-        self.textbox = tkinter.Text(parent)
+        self.textbox = tkinter.Text(
+            parent,
+            font=(config.font, config.fontsize, 'normal')
+        )
         gui.lib.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
 
