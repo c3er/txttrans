@@ -27,9 +27,11 @@ def create_menus(parent):
 
     for i, t in enumerate(gui.transformers):
         fkey_str = "F" + str(i + 1)
-        parent.bind("<{}>".format(fkey_str), t.handler)
-        mainmenu.add_item(t.label, t.handler, accelerator=fkey_str)
-        popup.add_entry(t.label, t.handler, fkey_str)
+        label = t.label
+        handler = t.handler
+        parent.bind("<{}>".format(fkey_str), handler)
+        mainmenu.add_item(label, handler, accelerator=fkey_str)
+        popup.add_entry(label, handler, fkey_str)
         
     parent.bind('<Button-3>', popup.display)
 

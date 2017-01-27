@@ -144,11 +144,12 @@ class transform_handler:
 
     def __call__(self, func):
         def wrapper(event=None):
-            message.info('Transform handler "{}" called'.format(self.label))
+            label = self.label
+            message.info('Transform handler "{}" called'.format(label))
             try:
                 text = func(_maintext.get())
                 if text is None:
-                    raise Exception("Transform handler '{}' returned 'None'.".format(func.__name__))
+                    raise Exception("Transform handler '{}' returned 'None'.".format(label))
                 _maintext.clipboard = text
                 _maintext.set(text)
             finally:

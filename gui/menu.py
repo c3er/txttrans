@@ -8,7 +8,7 @@ from misc import curry
 
 
 class Menu:
-    """Wrapper class over the tkinter.Menu class to add needed features
+    """Wrapper class over the tkinter.Menu class to add features.
     These features are:
     - A nice tree structure to navigate through.
     - The possibility to get every item as variable.
