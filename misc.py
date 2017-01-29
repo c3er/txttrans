@@ -28,3 +28,10 @@ def getstarterdir():
 
 def getscriptpath(script):
     return os.path.dirname(os.path.realpath(script))
+
+
+def event2str(event):
+    """For debugging
+    Tool should not react to the F10 key if there are not as many transformers defined
+    """
+    return "\n".join("{}\t{}".format(attr, getattr(event, attr)) for attr in dir(event))

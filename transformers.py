@@ -52,3 +52,8 @@ def t(text):
 @gui.transform_handler("Return None")
 def t(text):
     return None
+
+
+# @gui.transform_handler("Hello 1")
+# def t(text):
+#     return "Hello 1"

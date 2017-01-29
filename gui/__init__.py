@@ -161,6 +161,10 @@ class transform_handler:
 # Helpers ######################################################################
 
 class MainWindow(tkinter.Tk):
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self.unbind_all("<F10>")
+
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
         message.error("Exception occured:", ''.join(msg))
