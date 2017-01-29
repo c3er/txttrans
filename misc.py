@@ -30,8 +30,9 @@ def getscriptpath(script):
     return os.path.dirname(os.path.realpath(script))
 
 
-def event2str(event):
+def obj2str(obj):
     """For debugging
-    Tool should not react to the F10 key if there are not as many transformers defined
+    Get a string, containing the attributes and their values of the
+    given object.
     """
-    return "\n".join("{}\t{}".format(attr, getattr(event, attr)) for attr in dir(event))
+    return "\n".join("{}\t{}".format(attr, getattr(obj, attr)) for attr in dir(obj))
