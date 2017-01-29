@@ -10,7 +10,7 @@ See [transformers.py](transformers.py) for examples. You can add so called "tran
 
 ```python
 @gui.transform_handler("Say hello")
-def say_hello(text):
+def t(text):
     return "Hello " + text
 ```
 
@@ -18,7 +18,7 @@ def say_hello(text):
 # Files of interest
 
 
-## [txttrans.py](txttrans.py)
+## [txttrans.pyw](txttrans.pyw)
 
 File to start the tool.
 
