@@ -17,6 +17,9 @@ from misc import curry
 MAINWINDOW_SIZE = "800x700"
 
 
+_root = None
+
+
 # GUI initialization ###########################################################
 
 def create_menus(parent):
@@ -48,14 +51,20 @@ def message_area(parent):
 
 ################################################################################
 
+def cleanup():
+    if _root:
+        _root.destroy()
+
 
 def close_app(root):
     message.info("Quitting")
-    root.destroy()
+    cleanup()
 
 
 def main():
-    root = gui.MainWindow()
+    global _root
+    _root = root = gui.MainWindow()
+
     root.wm_title("Text Transformator")
     root.geometry(MAINWINDOW_SIZE)
     root.bind("<Alt-F4>", lambda event: close_app(root))

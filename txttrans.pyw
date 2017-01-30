@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import types
 import traceback
 import tkinter
 import tkinter.ttk as ttk
@@ -49,6 +50,15 @@ def main():
         main.main()
     except:
         tb = traceback.format_exc()
+        
+        try:
+            import main
+        except Exception:
+            pass
+        else:
+            if hasattr(main, "cleanup") and isinstance(main.cleanup, types.FunctionType):
+                main.cleanup()
+
         root = tkinter.Tk()
         root.wm_title("Error")
         root.geometry(ERRORWINDOW_SIZE)
