@@ -30,6 +30,11 @@ def t(text):
     return str(xmllib.str2xml(text))
 
 
+@gui.transform_handler('"\\" to "/"')
+def t(text):
+    return text.replace("\\", "/")
+
+
 @gui.transform_handler("Say Hello")
 def t(text):
     entries = [
