@@ -27,7 +27,7 @@ class MessageHandler:
 
     def write(self, msg):
         self.textbox.config(state="normal")
-        self.textbox.insert("end", str(msg) + "\n", str(msg.level))
+        self.textbox.insert("end", str(msg).strip() + "\n", str(msg.level))
         self.textbox.config(state="disabled")
         self.textbox.yview("end")
 
