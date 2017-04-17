@@ -5,6 +5,7 @@
 import os
 import json
 import collections
+import base64
 
 import gui
 import info
@@ -33,6 +34,11 @@ def t(text):
 @gui.transform_handler('"\\" to "/"')
 def t(text):
     return text.replace("\\", "/")
+
+
+@gui.transform_handler("Decode Base64")
+def t(text):
+    return base64.decodebytes(text.encode()).decode()
 
 
 @gui.transform_handler("Say Hello")
