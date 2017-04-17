@@ -5,7 +5,7 @@ import tkinter
 import tkinter.ttk as ttk
 
 import gui
-import gui.lib
+import gui.base
 import gui.menu
 
 import message
@@ -37,6 +37,7 @@ def create_menus(parent):
         popup.add_entry(label, handler, fkey_str)
         
     parent.bind('<Button-3>', popup.display)
+
 
 def main_area(parent):
     frame = ttk.Frame(parent)

@@ -7,7 +7,7 @@ import traceback
 import tkinter
 import tkinter.ttk as ttk
 
-import gui.lib
+import gui.base
 import message
 import misc
 
@@ -143,8 +143,8 @@ class transform_handler:
         self.label = label
 
     def __call__(self, func):
+        label = self.label
         def wrapper(event=None):
-            label = self.label
             message.info('Transform handler "{}" called'.format(label))
             try:
                 text = func(_maintext.get())
@@ -154,7 +154,7 @@ class transform_handler:
                 _maintext.set(text)
             finally:
                 _maintext.set_focus()
-        transformers.append(Transformer(self.label, wrapper))
+        transformers.append(Transformer(label, wrapper))
         return wrapper
 
 
@@ -176,7 +176,7 @@ class MainText:
             parent,
             font=(config.font, config.fontsize, 'normal')
         )
-        gui.lib.setup_scrollbars(parent, self.textbox)
+        gui.base.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
 
     @property

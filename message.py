@@ -6,7 +6,7 @@ import sys
 import enum
 import tkinter
 
-import gui.lib
+import gui.base
 
 import config
 
@@ -22,7 +22,7 @@ class MessageHandler:
             background="black"
         )
         self.textbox.config(state="disabled")
-        gui.lib.setup_scrollbars(parent, self.textbox)
+        gui.base.setup_scrollbars(parent, self.textbox)
         self._configcolors()
 
     def write(self, msg):
