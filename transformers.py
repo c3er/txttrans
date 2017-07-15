@@ -9,8 +9,18 @@ import base64
 
 import gui
 import info
+import message
 
 import xmllib
+
+try:
+    message.debug("Importing external modules...")
+    import loremipsum  # pip install loremipsum
+except ImportError:
+    message.warn("Failed to import one or more modules")
+    message.warn("Some transform handlers may not work")
+else:
+    message.debug("External modules imported")
 
 
 @gui.transform_handler("Help")

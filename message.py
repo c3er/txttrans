@@ -11,6 +11,9 @@ import gui.base
 import config
 
 
+# Messages that are generated before the UI is initialized.
+_messages = []
+
 _handler = None
 
 
@@ -24,6 +27,9 @@ class MessageHandler:
         self.textbox.config(state="disabled")
         gui.base.setup_scrollbars(parent, self.textbox)
         self._configcolors()
+
+        for msg in _messages:
+            self.write(msg)
 
     def write(self, msg):
         self.textbox.config(state="normal")
@@ -76,3 +82,14 @@ def warn(*args, sep=" "):
 
 def error(*args, sep=" "):
     _handler.write(Message(Level.error, *args, sep=sep))
+
+
+class _TmpMessageHandler:
+    """A handler that is active before the UI is intitalized.
+    It will be intialized in the bottom of this source file.
+    """
+    def write(self, msg):
+        _messages.append(msg)
+
+
+_handler = _TmpMessageHandler()
