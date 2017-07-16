@@ -51,6 +51,32 @@ def t(text):
     return base64.decodebytes(text.encode()).decode()
 
 
+def isnumber(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
+
+
+@gui.transform_handler("Lorem Ipsum Generator")
+def t(text):
+    label = "Count of sentences"
+    sdd = gui.SimpleDataDialog(
+        "Lorem Ipsum Generator",
+        [gui.DataEntry(label, 100, validator=lambda value: isnumber(value))]
+    )
+    count = int(sdd.result[label])
+
+    sentences = [
+        data[2]
+            .replace("b'", "")
+            .replace("'", "")
+        for data in loremipsum.generate_sentences(count, start_with_lorem=True)
+    ]
+    return " ".join(sentences)
+
+
 @gui.transform_handler("Say Hello")
 def t(text):
     entries = [
