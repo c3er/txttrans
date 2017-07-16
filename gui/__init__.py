@@ -25,7 +25,7 @@ transformers = []
 
 class _DialogBase(tkinter.Toplevel):
     def __init__(self, parent, title = None):
-        'Must be called after initialization of inheriting classes.'
+        """Must be called after initialization of inheriting classes."""
 
         super().__init__(parent)
 
@@ -164,6 +164,7 @@ class MainWindow(tkinter.Tk):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
         self.unbind_all("<F10>")
+        self.bind('<<Paste>>', lambda event: _maintext.set(_maintext.clipboard))
 
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
@@ -171,6 +172,8 @@ class MainWindow(tkinter.Tk):
 
 
 class MainText:
+    MAX_CHARACTERS = 100000
+
     def __init__(self, parent):
         self.textbox = tkinter.Text(
             parent,
@@ -179,9 +182,12 @@ class MainText:
         gui.base.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
 
+        self.text_is_too_big = False
+        self.too_big_text = ""
+
     @property
     def clipboard(self):
-        raise NotImplementedError()
+        return self.textbox.selection_get(selection='CLIPBOARD')
 
     @clipboard.setter
     def clipboard(self, text):
@@ -189,11 +195,20 @@ class MainText:
         self.textbox.clipboard_append(text)
 
     def get(self):
+        if self.text_is_too_big:
+            return self.too_big_text.strip()
         return self.textbox.get("1.0", "end").strip()
 
     def set(self, text):
         self.textbox.delete("1.0", "end")
-        self.textbox.insert("1.0", text)
+        if len(text) < self.MAX_CHARACTERS:
+            self.textbox.insert("1.0", text)
+            self.text_is_too_big = False
+        else:
+            self.too_big_text = text
+            self.text_is_too_big = True
+            msg = "Desired text is too big to display. But it is remembered and in the clipboard."
+            self.textbox.insert("1.0", msg)
 
     def set_focus(self):
         self.textbox.focus_set()

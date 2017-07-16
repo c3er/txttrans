@@ -17,8 +17,7 @@ try:
     message.debug("Importing external modules...")
     import loremipsum  # pip install loremipsum
 except ImportError:
-    message.warn("Failed to import one or more modules")
-    message.warn("Some transform handlers may not work")
+    message.warn("Failed to import one or more modules. Some transform handlers may not work.")
 else:
     message.debug("External modules imported")
 
