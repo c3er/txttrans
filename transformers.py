@@ -63,13 +63,14 @@ def t(text):
     label = "Count of sentences"
     sdd = gui.SimpleDataDialog(
         "Lorem Ipsum Generator",
-        [gui.DataEntry(label, 100, validator=isnumber)]
+        gui.DataEntry(label, 100, validator=isnumber)
     )
 
     if not sdd.canceled:
         count = int(sdd.result[label])
         sentences = [
             data[2]
+                # Workaround for a bug in the loremipsum library
                 .replace("b'", "")
                 .replace("'", "")
             for data in loremipsum.generate_sentences(count, start_with_lorem=True)

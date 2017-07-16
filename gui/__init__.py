@@ -232,8 +232,9 @@ class DataEntry:
 class SimpleDataDialog(_DialogBase):
     ENTRYWIDTH = 80
 
-    def __init__(self, title, entries):
-        self.entries = entries
+    def __init__(self, title, *entries):
+        firstentry = entries[0]
+        self.entries = firstentry if len(entries) == 1 and misc.islistlike(firstentry) else entries
         super().__init__(_root, title)
 
     def body(self, master):
