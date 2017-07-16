@@ -55,7 +55,7 @@ class Level(enum.Enum):
 class Message:
     def __init__(self, msglevel, *args, sep=" "):
         self.level = msglevel
-        self.parts = args
+        self.parts = [str(arg) for arg in args]
         self.separator = sep
 
     def __str__(self):
