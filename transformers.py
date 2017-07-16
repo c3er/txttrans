@@ -66,15 +66,17 @@ def t(text):
         "Lorem Ipsum Generator",
         [gui.DataEntry(label, 100, validator=lambda value: isnumber(value))]
     )
-    count = int(sdd.result[label])
-
-    sentences = [
-        data[2]
-            .replace("b'", "")
-            .replace("'", "")
-        for data in loremipsum.generate_sentences(count, start_with_lorem=True)
-    ]
-    return " ".join(sentences)
+    
+    if not sdd.canceled:
+        count = int(sdd.result[label])
+        sentences = [
+            data[2]
+                .replace("b'", "")
+                .replace("'", "")
+            for data in loremipsum.generate_sentences(count, start_with_lorem=True)
+        ]
+        return " ".join(sentences)
+    return text
 
 
 @gui.transform_handler("Say Hello")
