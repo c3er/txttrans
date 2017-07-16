@@ -64,9 +64,9 @@ def t(text):
     label = "Count of sentences"
     sdd = gui.SimpleDataDialog(
         "Lorem Ipsum Generator",
-        [gui.DataEntry(label, 100, validator=lambda value: isnumber(value))]
+        [gui.DataEntry(label, 100, validator=isnumber)]
     )
-    
+
     if not sdd.canceled:
         count = int(sdd.result[label])
         sentences = [
@@ -83,7 +83,7 @@ def t(text):
 def t(text):
     entries = [
         gui.DataEntry("Forename", validator=lambda value: value == "Tom"),
-        gui.DataEntry("Surname", "Jones", validator=lambda value: bool(value)),
+        gui.DataEntry("Surname", "Jones", validator=bool),
         gui.DataEntry("No meaning"),
     ]
     sdd = gui.SimpleDataDialog("Hello", entries)
