@@ -148,10 +148,9 @@ class transform_handler:
             message.info('Transform handler "{}" called'.format(label))
             try:
                 text = func(_maintext.get())
-                if text is None:
-                    raise Exception("Transform handler '{}' returned 'None'.".format(label))
-                _maintext.clipboard = text
-                _maintext.set(text)
+                if text:
+                    _maintext.clipboard = text
+                    _maintext.set(text)
             finally:
                 _maintext.set_focus()
         transformers.append(Transformer(label, wrapper))
