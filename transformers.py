@@ -50,6 +50,70 @@ def t(text):
     return base64.decodebytes(text.encode()).decode()
 
 
+# Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
+_vcard_template = """\
+BEGIN:VCARD
+VERSION:4.0
+N:{{FAMILY_NAME}};{{GIVEN_NAME}};{{ADDITIONAL_NAMES}};{{PREFIXES}};{{SUFFIXES}}
+FN:{{PREFIXES}} {{GIVEN_NAME}} {{ADDITIONAL_NAMES}} {{FAMILY_NAME}} {{SUFFIXES}}
+ORG:{{ORGANIZATION}}
+TEL;TYPE=home,voice;VALUE=uri:tel{{TELEFON_NUMBER}}
+ADR;TYPE=home;LABEL="{{STREET}} {{STREET_NUMBER}}\n{{POSTAL_CODE}} {{CITY}}\nDeutschland"
+ :;;{{STREET}} {{STREET_NUMBER}};{{CITY}};;{{POSTAL_CODE}};Germany
+EMAIL:{{EMAIL_ADDRESS}}
+END:VCARD
+"""
+
+
+@gui.transform_handler("Generate vCard")
+def t(text):
+    PREFIXES_LABEL = "Prefixes"
+    GIVEN_NAME_LABEL = "Given name"
+    ADDITIONAL_NAMES_LABEL = "Additional names"
+    FAMILY_NAME_LABEL = "Family name"
+    SUFFIXES_LABEL = "Suffixes"
+    ORGANIZATION_LABEL ="Organization"
+    TELEFON_NUMBER_LABEL = "Telefon number"
+    STREET_LABEL = "Street"
+    STREEL_NUMBER_LABEL = "Street number"
+    CITY_LABEL = "City"
+    POSTAL_CODE_LABEL = "Postal code"
+    EMAIL_ADDRESS_LABEL = "E-Mail address"
+
+    entries = [
+        gui.DataEntry(PREFIXES_LABEL),
+        gui.DataEntry(GIVEN_NAME_LABEL, validator=bool),
+        gui.DataEntry(ADDITIONAL_NAMES_LABEL),
+        gui.DataEntry(FAMILY_NAME_LABEL, validator=bool),
+        gui.DataEntry(SUFFIXES_LABEL),
+        gui.DataEntry(ORGANIZATION_LABEL, "Privat"),
+        gui.DataEntry(TELEFON_NUMBER_LABEL, "+49 "),
+        gui.DataEntry(STREET_LABEL),
+        gui.DataEntry(STREEL_NUMBER_LABEL),
+        gui.DataEntry(CITY_LABEL),
+        gui.DataEntry(POSTAL_CODE_LABEL),
+        gui.DataEntry(EMAIL_ADDRESS_LABEL),
+    ]
+
+    sdd = gui.SimpleDataDialog("Visiting Card", entries)
+    if not sdd.canceled:
+        result = sdd.result
+        return (_vcard_template
+            .replace("{{PREFIXES}}", result[PREFIXES_LABEL])
+            .replace("{{GIVEN_NAME}}", result[GIVEN_NAME_LABEL])
+            .replace("{{ADDITIONAL_NAMES}}", result[ADDITIONAL_NAMES_LABEL])
+            .replace("{{FAMILY_NAME}}", result[FAMILY_NAME_LABEL])
+            .replace("{{SUFFIXES}}", result[SUFFIXES_LABEL])
+            .replace("{{ORGANIZATION}}", result[ORGANIZATION_LABEL])
+            .replace("{{TELEFON_NUMBER}}", result[TELEFON_NUMBER_LABEL])
+            .replace("{{STREET}}", result[STREET_LABEL])
+            .replace("{{STREET_NUMBER}}", result[STREEL_NUMBER_LABEL])
+            .replace("{{CITY}}", result[CITY_LABEL])
+            .replace("{{POSTAL_CODE}}", result[POSTAL_CODE_LABEL])
+            .replace("{{EMAIL_ADDRESS}}", result[EMAIL_ADDRESS_LABEL])
+        )
+
+
 def isnumber(value):
     try:
         int(value)
@@ -76,7 +140,6 @@ def t(text):
             for data in loremipsum.generate_sentences(count, start_with_lorem=True)
         ]
         return " ".join(sentences)
-    return text
 
 
 @gui.transform_handler("Say Hello")
@@ -90,7 +153,6 @@ def t(text):
     result = sdd.result
     if result:
         return "Hello {} {}".format(result["Forename"], result["Surname"])
-    return text
 
 
 @gui.transform_handler("Raise exception")
