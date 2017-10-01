@@ -3,13 +3,13 @@ A tool that can transform ASCII text with help Python code.
 
 # Usage
 
-See [transformers.py](transformers.py) for examples. You can add so called "transform_handlers" there that take the text that is currently in the main text field as parameter and returns some other text.
+See [transformers.py](transformers.py) for examples. You can add so called "transformers" there. A "transformer" takes the text that is currently in the main text field as parameter and returns some other text.
 
 
 ## Example transformer
 
 ```python
-@gui.transform_handler("Say hello")
+@api.transformer("Say hello")
 def t(text):
     return "Hello " + text
 ```
@@ -33,6 +33,6 @@ Described above.
 Configuration file. It allows you to alter the appearance of the tool and and switch on/off the debug mode (consists of additional messages).
 
 
-## [info.py](info.py)
+## [api.py](api.py)
 
-Contains information of the environment, e.g. the directory where the starter file ([txttrans.py](txttrans.py)) is in.
+Members of this module are supposed to be invoked by transformers. It should never be necessary to invoke methods of other modules of the application (e.g. `gui` or `info`).

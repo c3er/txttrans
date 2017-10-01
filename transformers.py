@@ -7,45 +7,43 @@ import json
 import collections
 import base64
 
-import gui
-import info
-import message
+import api
 
 import xmllib
 
 try:
-    message.debug("Importing external modules...")
+    api.message.debug("Importing external modules...")
     import loremipsum  # pip install loremipsum
 except ImportError:
-    message.warn("Failed to import one or more modules. Some transform handlers may not work.")
+    api.message.warn("Failed to import one or more modules. Some transform handlers may not work.")
 else:
-    message.debug("External modules imported")
+    api.message.debug("External modules imported")
 
 
-@gui.transform_handler("Help")
+@api.transformer("Help")
 def t(text):
-    readmepath = os.path.join(info.execdir, "README.md")
+    readmepath = os.path.join(api.execdir, "README.md")
     with open(readmepath, encoding="utf8") as f:
         return f.read()
 
 
-@gui.transform_handler("Beatify JSON")
+@api.transformer("Beatify JSON")
 def t(text):
     obj = json.loads(text, object_pairs_hook=collections.OrderedDict)
     return json.dumps(obj, indent=4, separators=(",", ": "))
 
 
-@gui.transform_handler("Beautify XML")
+@api.transformer("Beautify XML")
 def t(text):
     return str(xmllib.str2xml(text))
 
 
-@gui.transform_handler('"\\" to "/"')
+@api.transformer('"\\" to "/"')
 def t(text):
     return text.replace("\\", "/")
 
 
-@gui.transform_handler("Decode Base64")
+@api.transformer("Decode Base64")
 def t(text):
     return base64.decodebytes(text.encode()).decode()
 
@@ -65,7 +63,7 @@ END:VCARD
 """
 
 
-@gui.transform_handler("Generate vCard")
+@api.transformer("Generate vCard")
 def t(text):
     PREFIXES_LABEL = "Prefixes"
     GIVEN_NAME_LABEL = "Given name"
@@ -81,21 +79,21 @@ def t(text):
     EMAIL_ADDRESS_LABEL = "E-Mail address"
 
     entries = [
-        gui.DataEntry(PREFIXES_LABEL),
-        gui.DataEntry(GIVEN_NAME_LABEL, validator=bool),
-        gui.DataEntry(ADDITIONAL_NAMES_LABEL),
-        gui.DataEntry(FAMILY_NAME_LABEL, validator=bool),
-        gui.DataEntry(SUFFIXES_LABEL),
-        gui.DataEntry(ORGANIZATION_LABEL, "Privat"),
-        gui.DataEntry(TELEFON_NUMBER_LABEL, "+49 "),
-        gui.DataEntry(STREET_LABEL),
-        gui.DataEntry(STREEL_NUMBER_LABEL),
-        gui.DataEntry(CITY_LABEL),
-        gui.DataEntry(POSTAL_CODE_LABEL),
-        gui.DataEntry(EMAIL_ADDRESS_LABEL),
+        api.DataEntry(PREFIXES_LABEL),
+        api.DataEntry(GIVEN_NAME_LABEL, validator=bool),
+        api.DataEntry(ADDITIONAL_NAMES_LABEL),
+        api.DataEntry(FAMILY_NAME_LABEL, validator=bool),
+        api.DataEntry(SUFFIXES_LABEL),
+        api.DataEntry(ORGANIZATION_LABEL, "Privat"),
+        api.DataEntry(TELEFON_NUMBER_LABEL, "+49 "),
+        api.DataEntry(STREET_LABEL),
+        api.DataEntry(STREEL_NUMBER_LABEL),
+        api.DataEntry(CITY_LABEL),
+        api.DataEntry(POSTAL_CODE_LABEL),
+        api.DataEntry(EMAIL_ADDRESS_LABEL),
     ]
 
-    sdd = gui.SimpleDataDialog("Visiting Card", entries)
+    sdd = api.SimpleDataDialog("Visiting Card", entries)
     if not sdd.canceled:
         result = sdd.result
         return (_vcard_template
@@ -122,12 +120,12 @@ def isnumber(value):
         return False
 
 
-@gui.transform_handler("Lorem Ipsum Generator")
+@api.transformer("Lorem Ipsum Generator")
 def t(text):
     label = "Count of sentences"
-    sdd = gui.SimpleDataDialog(
+    sdd = api.SimpleDataDialog(
         "Lorem Ipsum Generator",
-        gui.DataEntry(label, 100, validator=isnumber)
+        api.DataEntry(label, 100, validator=isnumber)
     )
 
     if not sdd.canceled:
@@ -142,29 +140,29 @@ def t(text):
         return " ".join(sentences)
 
 
-@gui.transform_handler("Say Hello")
+@api.transformer("Say Hello")
 def t(text):
     entries = [
-        gui.DataEntry("Forename", validator=lambda value: value == "Tom"),
-        gui.DataEntry("Surname", "Jones", validator=bool),
-        gui.DataEntry("No meaning"),
+        api.DataEntry("Forename", validator=lambda value: value == "Tom"),
+        api.DataEntry("Surname", "Jones", validator=bool),
+        api.DataEntry("No meaning"),
     ]
-    sdd = gui.SimpleDataDialog("Hello", entries)
+    sdd = api.SimpleDataDialog("Hello", entries)
     result = sdd.result
     if result:
         return "Hello {} {}".format(result["Forename"], result["Surname"])
 
 
-@gui.transform_handler("Raise exception")
+@api.transformer("Raise exception")
 def t(text):
     raise Exception(":-P")
 
 
-@gui.transform_handler("Return None")
+@api.transformer("Return None")
 def t(text):
     return None
 
 
-# @gui.transform_handler("Hello 1")
+# @api.transformer("Hello 1")
 # def t(text):
 #     return "Hello 1"
