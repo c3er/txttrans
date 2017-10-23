@@ -53,20 +53,29 @@ def t(text):
     return "\n".join(line for line in text.splitlines() if line.strip().startswith("#"))
 
 
+class DefaultValueDict(collections.UserDict):
+    def __init__(self, default):
+        super().__init__()
+        self.default = default
+
+    def __getitem__(self, key):
+        try:
+            return self.data[key]
+        except KeyError:
+            return self.default
+
+
 @api.transformer("Align Markdown table")
 def t(text):
     table = []
     for line in text.splitlines():
         table.append([cell.strip() for cell in line.strip().split("|") if cell])
 
-    column_lengths = {}
+    column_lengths = DefaultValueDict(0)
     for line in table:
         for i, cell in enumerate(line):
             cellsize = len(cell)
-            try:
-                if column_lengths[i] < cellsize:
-                    column_lengths[i] = cellsize
-            except KeyError:
+            if column_lengths[i] < cellsize:
                 column_lengths[i] = cellsize
 
     normalized_table = []
