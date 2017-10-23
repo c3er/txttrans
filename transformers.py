@@ -48,6 +48,11 @@ def t(text):
     return base64.decodebytes(text.encode()).decode()
 
 
+@api.transformer("Extract Markdown headers")
+def t(text):
+    return "\n".join(line for line in text.splitlines() if line.strip().startswith("#"))
+
+
 # Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
 _vcard_template = """\
 BEGIN:VCARD
