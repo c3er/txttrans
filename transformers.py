@@ -55,9 +55,8 @@ def t(text):
 
 @api.transformer("Align Markdown table")
 def t(text):
-    input_lines = text.splitlines()
     table = []
-    for line in input_lines:
+    for line in text.splitlines():
         table.append([cell.strip() for cell in line.strip().split("|") if cell])
 
     column_lengths = {}
