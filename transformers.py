@@ -53,6 +53,34 @@ def t(text):
     return "\n".join(line for line in text.splitlines() if line.strip().startswith("#"))
 
 
+@api.transformer("Align Markdown table")
+def t(text):
+    input_lines = text.splitlines()
+    table = []
+    for line in input_lines:
+        table.append([cell.strip() for cell in line.strip().split("|") if cell])
+
+    column_lengths = {}
+    for line in table:
+        for i, cell in enumerate(line):
+            cellsize = len(cell)
+            try:
+                if column_lengths[i] < cellsize:
+                    column_lengths[i] = cellsize
+            except KeyError:
+                column_lengths[i] = cellsize
+
+    normalized_table = []
+    for line in table:
+        normalized_table.append([" " + cell.ljust(column_lengths[i] + 1) for i, cell in enumerate(line)])
+
+    output_lines = []
+    for line in normalized_table:
+        output_lines.append("|" + "|".join(line) + "|")
+
+    return "\n".join(output_lines)
+
+
 # Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
 _vcard_template = """\
 BEGIN:VCARD
