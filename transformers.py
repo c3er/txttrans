@@ -6,6 +6,7 @@ import os
 import json
 import collections
 import base64
+import re
 
 import api
 
@@ -50,7 +51,15 @@ def t(text):
 
 @api.transformer("Extract Markdown headers")
 def t(text):
-    return "\n".join(line for line in text.splitlines() if line.strip().startswith("#"))
+    incode = False
+    lines = []
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith("```"):
+            incode = not incode
+        if not incode and line.startswith("#"):
+            lines.append(line)
+    return "\n".join(lines)
 
 
 class DefaultValueDict(collections.UserDict):
