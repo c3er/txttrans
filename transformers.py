@@ -98,6 +98,26 @@ def t(text):
     return "\n".join(output_lines)
 
 
+_html_template = '''\
+<html>
+    <head>
+        <title>Links</title>
+    </head>
+    <body>
+        {{LINKS}}
+    </body>
+</html>
+'''
+
+
+@api.transformer("Links to HTML")
+def t(text):
+    return _html_template.replace(
+        "{{LINKS}}",
+        "\n".join('<p><a href="{0}">{0}</a></p>'.format(link) for link in text.splitlines())
+    )
+
+
 # Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
 _vcard_template = """\
 BEGIN:VCARD
