@@ -80,7 +80,7 @@ def main():
     global _root
     _root = root = gui.MainWindow()
 
-    root.wm_title("Text Transformator")
+    root.wm_title("Text Transformer")
     root.geometry(MAINWINDOW_SIZE)
     root.bind("<Alt-F4>", lambda event: close_app(root))
     root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
