@@ -86,8 +86,11 @@ def main():
     root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
 
     create_menus(root)
-    main_area(root).pack(fill="both", expand=True)
-    message_area(root).pack(fill="both")
+
+    pw = tkinter.PanedWindow(root, orient="vertical")
+    pw.pack(fill="both", expand=True)
+    pw.add(main_area(root), minsize=500)
+    pw.add(message_area(root), minsize=100)
 
     message.debug("Initialized")
     message.info("Initialized")
