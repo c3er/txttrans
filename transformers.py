@@ -7,6 +7,7 @@ import json
 import collections
 import base64
 import re
+import string
 
 import api
 
@@ -116,6 +117,28 @@ def t(text):
         "{{LINKS}}",
         "\n".join('<p><a href="{0}">{0}</a></p>'.format(link) for link in text.splitlines())
     )
+
+
+_simple_transformer_tamplate = """\
+@api.transformer("Hello {{index}}")
+def t(text):
+    return "Hello {{index}}"
+"""
+
+
+@api.transformer('Generate "Hello" transformers')
+def t(text):
+    label = "Count"
+    sdd = api.SimpleDataDialog(
+        'Generate "Hello" tranformers',
+        api.DataEntry(label, validator=lambda value: all(map(lambda char: char in string.digits, value)))
+    )
+    if not sdd.canceled:
+        count = int(sdd.result[label])
+        return "\n\n".join(
+            _simple_transformer_tamplate.replace("{{index}}", str(i))
+            for i in range(1, count + 1)
+        )
 
 
 # Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
@@ -231,8 +254,3 @@ def t(text):
 @api.transformer("Return None")
 def t(text):
     return None
-
-
-# @api.transformer("Hello 1")
-# def t(text):
-#     return "Hello 1"
