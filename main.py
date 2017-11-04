@@ -33,12 +33,16 @@ def create_menus(parent):
         label = t.label
         handler = t.handler
         if i < FKEY_COUNT:
-            fkey_str = "F" + str(i + 1)
-            parent.bind("<{}>".format(fkey_str), handler)
+            keystring = "F" + str(i + 1)
+        elif i < FKEY_COUNT * 2:
+            keystring = "Control-F" + str((i % FKEY_COUNT) + 1)
         else:
-            fkey_str = None
-        mainmenu.add_item(label, handler, accelerator=fkey_str)
-        popup.add_entry(label, handler, fkey_str)
+            keystring = None
+
+        if keystring:
+            parent.bind("<{}>".format(keystring), handler)
+        mainmenu.add_item(label, handler, accelerator=keystring)
+        popup.add_entry(label, handler, keystring)
         
     parent.bind('<Button-3>', popup.display)
 
@@ -55,6 +59,7 @@ def message_area(parent):
     return frame
 
 ################################################################################
+
 
 def cleanup():
     if _root:
