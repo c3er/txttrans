@@ -15,6 +15,7 @@ from misc import curry
 
 
 MAINWINDOW_SIZE = "800x700"
+FKEY_COUNT = 12
 
 
 _root = None
@@ -29,10 +30,13 @@ def create_menus(parent):
     popup = gui.menu.Popup(parent)
 
     for i, t in enumerate(gui.transformers):
-        fkey_str = "F" + str(i + 1)
         label = t.label
         handler = t.handler
-        parent.bind("<{}>".format(fkey_str), handler)
+        if i < FKEY_COUNT:
+            fkey_str = "F" + str(i + 1)
+            parent.bind("<{}>".format(fkey_str), handler)
+        else:
+            fkey_str = None
         mainmenu.add_item(label, handler, accelerator=fkey_str)
         popup.add_entry(label, handler, fkey_str)
         
