@@ -32,10 +32,15 @@ def create_menus(parent):
     for i, t in enumerate(gui.transformers):
         label = t.label
         handler = t.handler
+
         if i < FKEY_COUNT:
             keystring = "F" + str(i + 1)
         elif i < FKEY_COUNT * 2:
             keystring = "Control-F" + str((i % FKEY_COUNT) + 1)
+        elif i < FKEY_COUNT * 3:
+            keystring = "Shift-F" + str((i % FKEY_COUNT) + 1)
+        elif i < FKEY_COUNT * 4:
+            keystring = "Control-Shift-F" + str((i % FKEY_COUNT) + 1)
         else:
             keystring = None
 

@@ -119,7 +119,7 @@ def t(text):
     )
 
 
-_simple_transformer_tamplate = """\
+_hello_transformer_tamplate = """\
 @api.transformer("Hello {{index}}")
 def t(text):
     return "Hello {{index}}"
@@ -136,7 +136,7 @@ def t(text):
     if not sdd.canceled:
         count = int(sdd.result[label])
         return "\n\n".join(
-            _simple_transformer_tamplate.replace("{{index}}", str(i))
+            _hello_transformer_tamplate.replace("{{index}}", str(i))
             for i in range(1, count + 1)
         )
 
