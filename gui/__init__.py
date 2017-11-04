@@ -145,7 +145,7 @@ class transform_handler:
     def __call__(self, func):
         label = self.label
         def wrapper(event=None):
-            message.info('Transform handler "{}" called'.format(label))
+            message.info('Call transfomer "{}"'.format(label))
             try:
                 text = func(_maintext.get())
                 if text:
