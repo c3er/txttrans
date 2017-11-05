@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 import tkinter
 import tkinter.ttk as ttk
 
@@ -10,8 +11,6 @@ import gui.menu
 
 import message
 import transformers
-
-from misc import curry
 
 
 MAINWINDOW_SIZE = "800x700"
@@ -66,22 +65,24 @@ def message_area(parent):
 ################################################################################
 
 
-def cleanup(root):
-        root.destroy()
+def cleanup():
+    if _root:
+        _root.destroy()
 
 
-def close_app(root):
+def close_app():
     message.info("Quitting")
-    cleanup(root)
+    cleanup()
 
 
 def main():
-    root = gui.MainWindow()
+    global _root
+    _root = root = gui.MainWindow()
 
     root.wm_title("Text Transformer")
     root.geometry(MAINWINDOW_SIZE)
-    root.bind("<Alt-F4>", lambda event: close_app(root))
-    root.protocol('WM_DELETE_WINDOW', curry(close_app, root))
+    root.bind("<Alt-F4>", lambda event: close_app())
+    root.protocol('WM_DELETE_WINDOW', close_app)
 
     create_menus(root)
 
