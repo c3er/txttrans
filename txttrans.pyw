@@ -11,6 +11,23 @@ import tkinter.ttk as ttk
 ERRORWINDOW_SIZE = "800x600"
 
 
+class ErrorData:
+    def __init__(self):
+        self.errors = []
+
+    def __str__(self):
+        errors = []
+        for stored_error in reversed(self.errors):
+            if not any(
+                    stored_error.strip() in error.strip() or error.strip() in stored_error.strip()
+                    for error in errors):
+                errors.insert(0, stored_error)
+        return "\n\n".join(errors)
+
+    def add(self):
+        self.errors.append(traceback.format_exc())
+
+
 class ErrorHandler:
     def __init__(self, parent, tb):
         self.textbox = tkinter.Text(
@@ -38,31 +55,35 @@ def setup_scrollbars(container, widget):
     container.grid_rowconfigure(0, weight=1)
 
 
-def message_area(parent, tb):
+def message_area(parent, msg):
     frame = ttk.Frame(parent)
-    ErrorHandler(frame, tb)
+    ErrorHandler(frame, msg)
     return frame
 
 
 def main():
+    errors = ErrorData()
     try:
         import main
         main.main()
     except:
-        tb = traceback.format_exc()
+        errors.add()
         
         try:
             import main
-        except Exception:
+        except:
             pass
         else:
             if hasattr(main, "cleanup") and isinstance(main.cleanup, types.FunctionType):
-                main.cleanup()
+                try:
+                    main.cleanup()
+                except:
+                    errors.add()
 
         root = tkinter.Tk()
         root.wm_title("Error")
         root.geometry(ERRORWINDOW_SIZE)
-        message_area(root, tb).pack(fill="both", expand=True)
+        message_area(root, str(errors)).pack(fill="both", expand=True)
         root.mainloop()
         raise
 
