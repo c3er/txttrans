@@ -66,19 +66,17 @@ def message_area(parent):
 ################################################################################
 
 
-def cleanup():
-    if _root:
-        _root.destroy()
+def cleanup(root):
+        root.destroy()
 
 
 def close_app(root):
     message.info("Quitting")
-    cleanup()
+    cleanup(root)
 
 
 def main():
-    global _root
-    _root = root = gui.MainWindow()
+    root = gui.MainWindow()
 
     root.wm_title("Text Transformer")
     root.geometry(MAINWINDOW_SIZE)
