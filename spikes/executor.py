@@ -28,6 +28,8 @@ while not msvcrt.kbhit():
             print("Execute", file)
             oldcode = codestr
             code = compile(codestr, file, "exec")
+
+            # Needed trick: Give data object defined here to the code to execute
             exec(code, { "data": data })
             for d in data:
                 print(d)
