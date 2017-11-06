@@ -5,6 +5,7 @@
 import sys
 import os
 import time
+import traceback
 
 import msvcrt
 
@@ -20,12 +21,18 @@ data = []
 oldcode = None
 file = os.path.join(getstarterdir(), FILE)
 while not msvcrt.kbhit():
-    with open(file, encoding="utf8") as f:
-        codestr = f.read()
-    if codestr != oldcode:
-        oldcode = codestr
-        code = compile(codestr, file, "exec")
-        exec(code, { "data": data })
-        for d in data:
-            print(d)
-    time.sleep(1)
+    try:
+        with open(file, encoding="utf8") as f:
+            codestr = f.read()
+        if codestr != oldcode:
+            print("Execute", file)
+            oldcode = codestr
+            code = compile(codestr, file, "exec")
+            exec(code, { "data": data })
+            for d in data:
+                print(d)
+    except:
+        print(traceback.format_exc(), file=sys.stderr)
+    finally:
+        time.sleep(1)
+msvcrt.getch()

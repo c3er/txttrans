@@ -5,6 +5,10 @@
 data.append("Hello")
 data.append("World")
 data.append("This")
-data.append("is")
-data.append("a")
 data.append("test")
+data.append(123)
+
+print("blub")
+print("Hallo", data.pop())
+print()
+print("foobar")
