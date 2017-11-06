@@ -132,13 +132,13 @@ class _DialogBase(tkinter.Toplevel):
 ################################################################################
 
 
-class Transformer:
+class TransformData:
     def __init__(self, label, handler):
         self.label = label
         self.handler = handler
 
 
-class transform_handler:
+class transformer:
     def __init__(self, label):
         self.label = label
 
@@ -153,7 +153,7 @@ class transform_handler:
                     _maintext.set(text)
             finally:
                 _maintext.set_focus()
-        transformers.append(Transformer(label, wrapper))
+        transformers.append(TransformData(label, wrapper))
         return wrapper
 
 
