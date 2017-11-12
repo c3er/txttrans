@@ -2,13 +2,20 @@
 # -*- coding: utf-8 -*-
 
 
-data.append("Hello")
-data.append("World")
-data.append("This")
-data.append("test")
-data.append(123)
+@decorator
+def foo():
+    pass
+
+@decorator
+def bar():
+    print("something")
+
+@decorator
+def test_func():
+    print("test")
+
 
 print("blub")
-print("Hallo", data.pop())
+print("Hallo")
 print()
 print("foobar")

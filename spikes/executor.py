@@ -13,11 +13,16 @@ import msvcrt
 FILE = "executed.py"
 
 
+def decorator(func):
+    """A decorator with side effect to a data structure"""
+    data.append(func.__name__)
+    return func
+
+
 def getstarterdir():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
-data = []
 oldcode = None
 file = os.path.join(getstarterdir(), FILE)
 while not msvcrt.kbhit():
@@ -29,8 +34,11 @@ while not msvcrt.kbhit():
             oldcode = codestr
             code = compile(codestr, file, "exec")
 
-            # Needed trick: Give data object defined here to the code to execute
-            exec(code, { "data": data })
+            # the data list needs to be initialized right before executing
+            data = []
+
+            # Execute the file with the global namespace...
+            exec(code)
             for d in data:
                 print(d)
     except:
