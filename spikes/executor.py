@@ -13,12 +13,12 @@ import msvcrt
 FILE = "executed.py"
 
 
-data = []
+functions = []
 
 
 def decorator(func):
     """A decorator with side effect to a data structure"""
-    data.append(func.__name__)
+    functions.append(func)
     return func
 
 
@@ -27,7 +27,7 @@ def getstarterdir():
 
 
 def main():
-    global data
+    global functions
     oldcode = None
     file = os.path.join(getstarterdir(), FILE)
     while not msvcrt.kbhit():
@@ -39,13 +39,15 @@ def main():
                 oldcode = codestr
                 code = compile(codestr, file, "exec")
 
-                # the data list needs to be initialized right before executing
-                data = []
+                # the function list needs to be initialized right before executing
+                functions = []
 
-                # Execute the file with the global namespace...
-                exec(code)
-                for d in data:
-                    print(d)
+                # Use global namespace and make sure that it does not mess with our namespace
+                namespace = globals().copy()
+                exec(code, namespace)
+                for f in functions:
+                    # The trick: the namespace object contains the globals of the executed code
+                    exec(f.__code__, namespace)
         except:
             print(traceback.format_exc(), file=sys.stderr)
         finally:
