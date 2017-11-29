@@ -13,6 +13,8 @@ import msvcrt
 FILE = "executed.py"
 
 
+# Function list must be global.
+# Both, the decorator and the executing function have to be able to access it.
 functions = []
 
 
@@ -39,17 +41,37 @@ def main():
                 oldcode = codestr
                 code = compile(codestr, file, "exec")
 
-                # the function list needs to be initialized right before executing
+                # The function list needs to be initialized right before executing
                 functions = []
 
-                # Use global namespace and make sure that it does not mess with our namespace
+                # Our namespace shall not be messed up by the executed code
                 namespace = globals().copy()
+                
+                # Execute the file.
+                # Because our namespace is given, the file knows the decorator.
                 exec(code, namespace)
+
+                # The decorator did its work and functions are registered now
                 for f in functions:
-                    # The trick: the namespace object contains the globals of the executed code
-                    exec(f.__code__, namespace)
-        except:
-            print(traceback.format_exc(), file=sys.stderr)
+                    try:
+                        # A parameter that could come from elsewhere
+                        param = "A function parameter"
+
+                        # A parameterless wrapper is needed.
+                        # Its name is needed too, therefore a lambda is not appropriated
+                        def wrapper():
+                            return f(param)
+
+                        # Register wrapper's name in namespace
+                        namespace[wrapper.__name__] = wrapper
+
+                        # Execute!
+                        result = eval(f"{wrapper.__name__}()", namespace)
+
+                        print("Executor:", result)
+                    except:
+                        # Handle such things like syntax errors
+                        print(traceback.format_exc(), file=sys.stderr)
         finally:
             time.sleep(1)
     msvcrt.getch()
