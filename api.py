@@ -16,7 +16,7 @@ import info
 import message
 
 
-transformer = gui.transform_handler
+transformer = gui.transformer
 SimpleDataDialog = gui.SimpleDataDialog
 DataEntry = gui.DataEntry
 
