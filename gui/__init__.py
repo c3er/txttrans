@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import os
 import traceback
 
 import tkinter
@@ -12,6 +13,10 @@ import message
 import misc
 
 import config
+
+
+TRANSFORMER_FILE = "transformers.py"
+FKEY_COUNT = 12
 
 
 _root = None
@@ -143,18 +148,8 @@ class transformer:
         self.label = label
 
     def __call__(self, func):
-        label = self.label
-        def wrapper(event=None):
-            message.info('Call transfomer "{}"'.format(label))
-            try:
-                text = func(_maintext.get())
-                if text:
-                    _maintext.clipboard = text
-                    _maintext.set(text)
-            finally:
-                _maintext.set_focus()
-        transformers.append(TransformData(label, wrapper))
-        return wrapper
+        transformers.append(TransformData(self.label, func))
+        return func
 
 
 # Helpers ######################################################################
@@ -164,9 +159,86 @@ class MainWindow(tkinter.Tk):
         super().__init__(*args, **kw)
         self.unbind_all("<F10>")
 
+        self.transfomer_file = os.path.join(misc.getstarterdir(), TRANSFORMER_FILE)
+        self.oldcode = None
+        self.menubar = None
+        self.mainmenu = None
+        self.popup = None
+        self.update_transformers()
+
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
         message.error("Exception occured:", ''.join(msg))
+
+    def update_transformers(self):
+        global transformers
+        try:
+            with open(self.transfomer_file, encoding="utf8") as f:
+                codestr = f.read()
+
+            if codestr != self.oldcode:
+                message.debug("Update transformers...")
+                self.oldcode = codestr
+
+                code = compile(codestr, self.transfomer_file, "exec")
+                transformers = []
+                self.namespace = globals().copy()
+                exec(code, self.namespace)
+
+                self._update_ui(transformers)
+                message.debug("Transformers updated")
+        finally:
+            self.after(1000, self.update_transformers)
+
+    def _update_ui(self, transformers):
+        if self.mainmenu:
+            self.mainmenu.destroy()
+        if self.popup:
+            self.popup.destroy()
+
+        if not self.menubar:
+            self.menubar = gui.menu.Menu(self)
+        self.mainmenu = self.menubar.add_submenu("Transformers")
+        self.popup = gui.menu.Popup(self)
+
+        for i, t in enumerate(transformers):
+            label = t.label
+            handler = lambda event=None, t=t, n=self.namespace: self._handle_transformer(t, n)
+            keystring = self._get_keystring(i)
+            if keystring:
+                self.bind("<{}>".format(keystring), handler)
+            self.mainmenu.add_item(label, handler, accelerator=keystring)
+            self.popup.add_entry(label, handler, keystring)
+            
+        self.bind('<Button-3>', self.popup.display)
+
+    @staticmethod
+    def _handle_transformer(t, namespace):
+        try:
+            message.info(f'Call transfomer "{t.label}"')
+            handler = t.handler
+            def wrapper():
+                return handler(_maintext.get())
+            namespace[wrapper.__name__] = wrapper
+            text = eval(f"{wrapper.__name__}()", namespace)
+            if text:
+                _maintext.clipboard = text
+                _maintext.set(text)
+        finally:
+            _maintext.set_focus()
+
+    @staticmethod
+    def _get_keystring(i):
+        if i < FKEY_COUNT:
+            return "F" + str(i + 1)
+        elif i < FKEY_COUNT * 2:
+            return "Control-F" + str((i % FKEY_COUNT) + 1)
+        elif i < FKEY_COUNT * 3:
+            return "Shift-F" + str((i % FKEY_COUNT) + 1)
+        elif i < FKEY_COUNT * 4:
+            return "Control-Shift-F" + str((i % FKEY_COUNT) + 1)
+        else:
+            return None
 
 
 class MainText:

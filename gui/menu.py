@@ -22,7 +22,7 @@ class Menu:
             
         self.tkmenu = tkinter.Menu(tkparent)
         
-        # ... ugly!
+        # ... not pretty
         if not isinstance(self, SubMenu):
             tkparent.config(menu=self.tkmenu)
             
@@ -50,6 +50,9 @@ class SubMenu(Menu):
         super().__init__(*args, **kw)
         self.parent = parent
         self.label = label
+
+    def destroy(self):
+        self.parent.tkmenu.delete(self.label)
     
 
 class MenuItem:
@@ -96,3 +99,6 @@ class Popup:
     
     def add_seperator(self):
         self.menu.add_separator()
+
+    def destroy(self):
+        self.menu.destroy()
