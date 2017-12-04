@@ -6,9 +6,6 @@ import tkinter
 import tkinter.ttk as ttk
 
 import gui
-import gui.base
-import gui.menu
-
 import message
 
 
@@ -47,6 +44,7 @@ def close_app():
 def main():
     global _root
     _root = root = gui.MainWindow()
+    root.update_transformers()
 
     root.wm_title("Text Transformer")
     root.geometry(MAINWINDOW_SIZE)

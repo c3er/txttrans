@@ -9,6 +9,7 @@ import tkinter
 import tkinter.ttk as ttk
 
 import gui.base
+import gui.menu
 import message
 import misc
 
@@ -164,7 +165,6 @@ class MainWindow(tkinter.Tk):
         self.menubar = None
         self.mainmenu = None
         self.popup = None
-        self.update_transformers()
 
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
