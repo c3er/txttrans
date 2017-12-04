@@ -39,8 +39,9 @@ def something(x):
     print(global_var)
 
 
-print("blub")
+print("Hello")
 print("Hallo")
+print("Hola")
 print()
 print("foobar")
 print(sys.argv)  # Unintended access to executor's namespace
