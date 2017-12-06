@@ -32,16 +32,18 @@ class MessageHandler:
             self.write(msg)
 
     def write(self, msg):
-        self.textbox.config(state="normal")
-        self.textbox.insert("end", str(msg).strip() + "\n", str(msg.level))
-        self.textbox.config(state="disabled")
-        self.textbox.yview("end")
+        t = self.textbox
+        t.config(state="normal")
+        t.insert("end", str(msg).strip() + "\n", str(msg.level))
+        t.config(state="disabled")
+        t.yview("end")
 
     def _configcolors(self):
-        self.textbox.tag_config(str(Level.debug), foreground="grey")
-        self.textbox.tag_config(str(Level.info), foreground="lightgrey")
-        self.textbox.tag_config(str(Level.warning), foreground="orange")
-        self.textbox.tag_config(str(Level.error), foreground="orangered")
+        tc = self.textbox.tag_config
+        tc(str(Level.debug), foreground="grey")
+        tc(str(Level.info), foreground="lightgrey")
+        tc(str(Level.warning), foreground="orange")
+        tc(str(Level.error), foreground="orangered")
 
 
 class Level(enum.Enum):
@@ -53,8 +55,8 @@ class Level(enum.Enum):
 
 
 class Message:
-    def __init__(self, msglevel, *args, sep=" "):
-        self.level = msglevel
+    def __init__(self, level, *args, sep=" "):
+        self.level = level
         self.parts = [str(arg) for arg in args]
         self.separator = sep
 
