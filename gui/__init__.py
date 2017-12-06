@@ -160,17 +160,26 @@ class MainWindow(tkinter.Tk):
         super().__init__(*args, **kw)
         self.unbind_all("<F10>")
 
-        self.transfomer_file = os.path.join(misc.getstarterdir(), TRANSFORMER_FILE)
-        self.oldcode = None
-        self.menubar = None
-        self.mainmenu = None
-        self.popup = None
-
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
         message.error("Exception occured:", ''.join(msg))
 
-    def update_transformers(self):
+
+class TransformerManager:
+    def __init__(self, root):
+        self.root = root
+
+        self.transfomer_file = os.path.join(misc.getstarterdir(), TRANSFORMER_FILE)
+        self.oldcode = None
+        self.namespace = None
+
+        self.menubar = None
+        self.mainmenu = None
+        self.popup = None
+
+        self.update()
+
+    def update(self):
         global transformers
         try:
             with open(self.transfomer_file, encoding="utf8") as f:
@@ -188,7 +197,7 @@ class MainWindow(tkinter.Tk):
                 self._update_ui(transformers)
                 message.debug("Transformers updated")
         finally:
-            self.after(1000, self.update_transformers)
+            self.root.after(1000, self.update)
 
     def _update_ui(self, transformers):
         if self.mainmenu:
@@ -197,20 +206,20 @@ class MainWindow(tkinter.Tk):
             self.popup.destroy()
 
         if not self.menubar:
-            self.menubar = gui.menu.Menu(self)
+            self.menubar = gui.menu.Menu(self.root)
         self.mainmenu = self.menubar.add_submenu("Transformers")
-        self.popup = gui.menu.Popup(self)
+        self.popup = gui.menu.Popup(self.root)
 
         for i, t in enumerate(transformers):
             label = t.label
             handler = lambda event=None, t=t, n=self.namespace: self._handle_transformer(t, n)
             keystring = self._get_keystring(i)
             if keystring:
-                self.bind("<{}>".format(keystring), handler)
+                self.root.bind("<{}>".format(keystring), handler)
             self.mainmenu.add_item(label, handler, accelerator=keystring)
             self.popup.add_entry(label, handler, keystring)
             
-        self.bind('<Button-3>', self.popup.display)
+        self.root.bind('<Button-3>', self.popup.display)
 
     @staticmethod
     def _handle_transformer(t, namespace):

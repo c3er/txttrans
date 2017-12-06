@@ -44,8 +44,6 @@ def close_app():
 def main():
     global _root
     _root = root = gui.MainWindow()
-    root.update_transformers()
-
     root.wm_title("Text Transformer")
     root.geometry(MAINWINDOW_SIZE)
     root.bind("<Alt-F4>", lambda event: close_app())
@@ -55,6 +53,8 @@ def main():
     pw.pack(fill="both", expand=True)
     pw.add(main_area(pw), weight=100)
     pw.add(message_area(pw), weight=1)
+    
+    tmgr = gui.TransformerManager(root)
 
     message.debug("Initialized")
     message.info("Initialized")
