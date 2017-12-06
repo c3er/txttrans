@@ -51,10 +51,10 @@ def main():
     root.bind("<Alt-F4>", lambda event: close_app())
     root.protocol('WM_DELETE_WINDOW', close_app)
 
-    pw = tkinter.PanedWindow(root, orient="vertical")
+    pw = ttk.PanedWindow(root, orient="vertical")
     pw.pack(fill="both", expand=True)
-    pw.add(main_area(root), minsize=500)
-    pw.add(message_area(root), minsize=100)
+    pw.add(main_area(pw), weight=100)
+    pw.add(message_area(pw), weight=1)
 
     message.debug("Initialized")
     message.info("Initialized")
