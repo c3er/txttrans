@@ -35,4 +35,4 @@ def obj2str(obj):
     Get a string, containing the attributes and their values of the
     given object.
     """
-    return "\n".join("{}\t{}".format(attr, getattr(obj, attr)) for attr in dir(obj))
+    return "\n".join(f"{attr}\t{getattr(obj, attr)}" for attr in dir(obj))

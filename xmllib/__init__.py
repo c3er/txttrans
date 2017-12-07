@@ -77,7 +77,7 @@ class XMLAttribute:
         return not self.__eq__(other)
 
     def __str__(self):
-        return '{}="{}"'.format(self.attr, self.val)
+        return f'{self.attr}="{self.val}"'
 
 
 class XMLAttributeList(collections.UserList):
@@ -98,7 +98,7 @@ class XMLAttributeList(collections.UserList):
                     return True
             return False
         else:
-            raise TypeError("Item must be of type 'XMLAttribute' or 'str' (actual: '{}').".format(type(item).__name__))
+            raise TypeError(f"Item must be of type 'XMLAttribute' or 'str' (actual: '{type(item).__name__}').")
 
     def add(self, attr, val):
         assert isinstance(attr, str)
@@ -430,7 +430,7 @@ class TestXMLTextHandling(unittest.TestCase):
             xmltext = xmltext.strip()
 
             output = str(str2xml(xmltext))
-            self.assertEqual(output, xmltext, "XMLs are identical\nOriginal:\n{}\nOutput:\n{}".format(xmltext, output))
+            self.assertEqual(output, xmltext, f"XMLs are identical\nOriginal:\n{xmltext}\nOutput:\n{output}")
 
     def test_text_beautifying(self):
         reference = reference_xml1.strip()
@@ -441,7 +441,7 @@ class TestXMLTextHandling(unittest.TestCase):
         ]
         for xmltext in xmltexts:
             output = str(str2xml(xmltext))
-            self.assertEqual(output, reference, "XMLs are beautified\Reference:\n{}\nOutput:\n{}".format(reference, output))
+            self.assertEqual(output, reference, f"XMLs are beautified\Reference:\n{reference}\nOutput:\n{output}")
 
 
 # Todo:

@@ -52,10 +52,7 @@ class _DialogBase(tkinter.Toplevel):
             self.initial_focus = self
 
         self.protocol("WM_DELETE_WINDOW", self.cancel)
-        self.geometry("+{}+{}".format(
-            parent.winfo_rootx() + 50,
-            parent.winfo_rooty() + 50)
-        )
+        self.geometry(f"+{parent.winfo_rootx() + 50}+{parent.winfo_rooty() + 50}")
         self.initial_focus.focus_set()
         self.wait_window(self)
 
@@ -215,7 +212,7 @@ class TransformerManager:
             handler = lambda event=None, t=t, n=self.namespace: self._handle_transformer(t, n)
             keystring = self._get_keystring(i)
             if keystring:
-                self.root.bind("<{}>".format(keystring), handler)
+                self.root.bind(f"<{keystring}>", handler)
             self.mainmenu.add_item(label, handler, accelerator=keystring)
             self.popup.add_entry(label, handler, keystring)
             
@@ -329,7 +326,7 @@ class SimpleDataDialog(_DialogBase):
         for entry in self.entries:
             entrysuccess = entry.validate()
             if not entrysuccess:
-                message.warn('Validation failed on entry "{}"'.format(entry.label))
+                message.warn(f'Validation failed on entry "{entry.label}"')
             succeeded = succeeded and entrysuccess
         return succeeded
 
