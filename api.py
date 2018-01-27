@@ -12,12 +12,14 @@ __all__ = [
 
 
 import gui
-import info
 import message
+import misc
 
 
 transformer = gui.transformer
 SimpleDataDialog = gui.SimpleDataDialog
 DataEntry = gui.DataEntry
 
-execdir = info.execdir
+# Directory where the tool (txttrans.pyw) is.
+# Useful e.g. to put some files there that can be used by a transform handler.
+execdir = misc.getstarterdir()
