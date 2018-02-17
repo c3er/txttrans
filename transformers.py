@@ -131,7 +131,7 @@ def t(text):
     label = "Count"
     sdd = api.SimpleDataDialog(
         'Generate "Hello" tranformers',
-        api.DataEntry(label, validator=lambda value: all(map(lambda char: char in string.digits, value)))
+        api.DataEntry(label, validator=lambda value: all(char in string.digits for char in value))
     )
     if not sdd.canceled:
         count = int(sdd.result[label])
