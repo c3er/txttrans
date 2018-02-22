@@ -54,7 +54,7 @@ def main():
     pw.add(main_area(pw), weight=100)
     pw.add(message_area(pw), weight=1)
     
-    tmgr = gui.TransformerManager(root)
+    gui.TransformerManager(root)
 
     message.debug("Initialized")
     message.info("Initialized")
