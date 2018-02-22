@@ -156,6 +156,7 @@ class MainWindow(tkinter.Tk):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
         self.unbind_all("<F10>")
+        self.bind('<<Paste>>', lambda event: _maintext.set(_maintext.clipboard))
 
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
