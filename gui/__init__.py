@@ -154,9 +154,13 @@ class transformer:
 
 class MainWindow(tkinter.Tk):
     def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
-        self.unbind_all("<F10>")
-        self.bind('<<Paste>>', lambda event: _maintext.set(_maintext.clipboard))
+        try:
+            super().__init__(*args, **kw)
+            self.unbind_all("<F10>")
+            _bind_paste(self)
+        except:
+            self.destroy()
+            raise
 
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
@@ -256,6 +260,7 @@ class MainText:
             parent,
             font=(config.font, config.fontsize, 'normal')
         )
+        _bind_paste(self.textbox)
         gui.base.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
 
@@ -277,18 +282,51 @@ class MainText:
         return self.textbox.get("1.0", "end").strip()
 
     def set(self, text):
-        self.textbox.delete("1.0", "end")
+        self.clear()
         if len(text) < self.MAX_CHARACTERS:
             self.textbox.insert("1.0", text)
             self.text_is_too_big = False
         else:
-            self.too_big_text = text
-            self.text_is_too_big = True
-            msg = "Desired text is too big to display. But it is remembered and in the clipboard."
-            self.textbox.insert("1.0", msg)
+            self._handle_too_big_text(text)
+
+    def insert(self, text):
+        """Inserts the given text at the current cursor position.
+        If some content is selected currently, the selection will be replaced
+        with the given text.
+        If the content is too big to display, the whole content will be
+        replaced, regardless the current cursor position or selection.
+        """
+        if self.text_is_too_big:
+            self.set(text)
+        else:
+            # Source: https://stackoverflow.com/a/6963100
+            # delete the selected text, if any
+            try:
+                start = self.textbox.index("sel.first")
+                end = self.textbox.index("sel.last")
+                self.textbox.delete(start, end)
+            except tkinter.TclError:
+                # nothing was selected, so paste doesn't need to delete anything
+                pass
+            if len(text) >= self.MAX_CHARACTERS:
+                before = self.textbox.get("1.0", "insert")
+                after = self.textbox.get("insert", "end")
+                self.clear()
+                self._handle_too_big_text(before + text + after)
+            else:
+                self.textbox.insert("insert", self.clipboard)
+
+    def clear(self):
+        self.textbox.delete("1.0", "end")
 
     def set_focus(self):
         self.textbox.focus_set()
+
+    def _handle_too_big_text(self, text):
+        self.too_big_text = text
+        self.text_is_too_big = True
+        msg = "Desired text is too big to display. But it is remembered and in the clipboard."
+        self.textbox.insert("1.0", msg)
 
 
 class DataEntry:
@@ -349,6 +387,19 @@ class SimpleDataDialog(_DialogBase):
     def _setentry(entry, text):
         entry.delete(0, 'end')
         entry.insert(0, text)
+
+
+def _clipboard_handler(event):
+    _maintext.insert(_maintext.clipboard)
+    _maintext.set_focus()
+    return "break"
+
+
+def _bind_paste(widget):
+    widget.unbind_all('<<Paste>>')
+    widget.unbind_all('<Control-v>')
+    widget.bind('<<Paste>>', _clipboard_handler)
+    widget.bind('<Control-v>', _clipboard_handler)
 
 
 def init_maintext(parent):
