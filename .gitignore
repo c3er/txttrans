@@ -5,3 +5,5 @@ tags
 # Python specific
 __pycache__/
 .mypy_cache/
+
+state.dat

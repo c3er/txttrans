@@ -7,9 +7,7 @@ import tkinter.ttk as ttk
 
 import gui
 import message
-
-
-MAINWINDOW_SIZE = "800x700"
+import state
 
 
 _root = None
@@ -43,9 +41,10 @@ def close_app():
 
 def main():
     global _root
-    _root = root = gui.MainWindow()
+    s = state.load()
+    _root = root = gui.MainWindow(s)
     root.wm_title("Text Transformer")
-    root.geometry(MAINWINDOW_SIZE)
+    root.geometry(s.window_geometry)
     root.bind("<Alt-F4>", lambda event: close_app())
     root.protocol('WM_DELETE_WINDOW', close_app)
 

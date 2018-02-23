@@ -153,7 +153,8 @@ class transformer:
 # Helpers ######################################################################
 
 class MainWindow(tkinter.Tk):
-    def __init__(self, *args, **kw):
+    def __init__(self, state, *args, **kw):
+        self.state = state
         try:
             super().__init__(*args, **kw)
             self.unbind_all("<F10>")
@@ -161,6 +162,16 @@ class MainWindow(tkinter.Tk):
         except:
             self.destroy()
             raise
+        self._destroyed = False
+
+    def destroy(self):
+        if not self._destroyed:
+            try:
+                self.state.window_geometry = self.geometry()
+                self.state.save()
+            finally:
+                super().destroy()
+                self._destroyed = True
 
     def report_callback_exception(self, exc, val, tb):
         msg = traceback.format_exception(exc, val, tb)
