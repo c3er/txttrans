@@ -46,3 +46,9 @@ Configuration file. It allows you to alter the appearance of the tool and and sw
 ### [api.py](api.py)
 
 Members of this module are supposed to be invoked by transformers. It should never be necessary to invoke methods of other modules of the application (e.g. `gui` or `info`).
+
+## Copyright and License
+
+This tool is made by Christian Dreier. If you find a copy somewhere, you find the original at [GitHub](https://github.com/c3er/txttrans).
+
+You can use and copy this tool under the conditions of the MIT license.
