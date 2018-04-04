@@ -126,70 +126,6 @@ def t(text):
             for i in range(1, count + 1))
 
 
-# Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
-_vcard_template = """\
-BEGIN:VCARD
-VERSION:4.0
-N:{{FAMILY_NAME}};{{GIVEN_NAME}};{{ADDITIONAL_NAMES}};{{PREFIXES}};{{SUFFIXES}}
-FN:{{PREFIXES}} {{GIVEN_NAME}} {{ADDITIONAL_NAMES}} {{FAMILY_NAME}} {{SUFFIXES}}
-ORG:{{ORGANIZATION}}
-TEL;TYPE=home,voice;VALUE=uri:tel{{TELEFON_NUMBER}}
-ADR;TYPE=home;LABEL="{{STREET}} {{STREET_NUMBER}}\n{{POSTAL_CODE}} {{CITY}}\nDeutschland"
- :;;{{STREET}} {{STREET_NUMBER}};{{CITY}};;{{POSTAL_CODE}};Germany
-EMAIL:{{EMAIL_ADDRESS}}
-END:VCARD
-"""
-
-
-@api.transformer("Generate vCard")
-def t(text):
-    PREFIXES_LABEL = "Prefixes"
-    GIVEN_NAME_LABEL = "Given name"
-    ADDITIONAL_NAMES_LABEL = "Additional names"
-    FAMILY_NAME_LABEL = "Family name"
-    SUFFIXES_LABEL = "Suffixes"
-    ORGANIZATION_LABEL ="Organization"
-    TELEFON_NUMBER_LABEL = "Telefon number"
-    STREET_LABEL = "Street"
-    STREEL_NUMBER_LABEL = "Street number"
-    CITY_LABEL = "City"
-    POSTAL_CODE_LABEL = "Postal code"
-    EMAIL_ADDRESS_LABEL = "E-Mail address"
-
-    entries = [
-        api.DataEntry(PREFIXES_LABEL),
-        api.DataEntry(GIVEN_NAME_LABEL, validator=bool),
-        api.DataEntry(ADDITIONAL_NAMES_LABEL),
-        api.DataEntry(FAMILY_NAME_LABEL, validator=bool),
-        api.DataEntry(SUFFIXES_LABEL),
-        api.DataEntry(ORGANIZATION_LABEL, "Privat"),
-        api.DataEntry(TELEFON_NUMBER_LABEL, "+49 "),
-        api.DataEntry(STREET_LABEL),
-        api.DataEntry(STREEL_NUMBER_LABEL),
-        api.DataEntry(CITY_LABEL),
-        api.DataEntry(POSTAL_CODE_LABEL),
-        api.DataEntry(EMAIL_ADDRESS_LABEL),
-    ]
-
-    sdd = api.SimpleDataDialog("Visiting Card", entries)
-    if not sdd.canceled:
-        result = sdd.result
-        return (_vcard_template
-            .replace("{{PREFIXES}}", result[PREFIXES_LABEL])
-            .replace("{{GIVEN_NAME}}", result[GIVEN_NAME_LABEL])
-            .replace("{{ADDITIONAL_NAMES}}", result[ADDITIONAL_NAMES_LABEL])
-            .replace("{{FAMILY_NAME}}", result[FAMILY_NAME_LABEL])
-            .replace("{{SUFFIXES}}", result[SUFFIXES_LABEL])
-            .replace("{{ORGANIZATION}}", result[ORGANIZATION_LABEL])
-            .replace("{{TELEFON_NUMBER}}", result[TELEFON_NUMBER_LABEL])
-            .replace("{{STREET}}", result[STREET_LABEL])
-            .replace("{{STREET_NUMBER}}", result[STREEL_NUMBER_LABEL])
-            .replace("{{CITY}}", result[CITY_LABEL])
-            .replace("{{POSTAL_CODE}}", result[POSTAL_CODE_LABEL])
-            .replace("{{EMAIL_ADDRESS}}", result[EMAIL_ADDRESS_LABEL])
-        )
-
-
 def isnumber(value):
     try:
         int(value)
@@ -226,6 +162,7 @@ def t(text):
     result = sdd.result
     if result:
         return "Hello {} {}".format(result["Forename"], result["Surname"])
+    return text
 
 
 @api.transformer("Raise exception")
