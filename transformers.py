@@ -35,19 +35,13 @@ def t(text):
     return json.dumps(obj, indent=4, separators=(",", ": "))
 
 
-@api.transformer("Beautify XML")
-def t(text):
-    return str(xmllib.str2xml(text))
+api.transformer("Beautify XML")(lambda text: str(xmllib.str2xml(text)))
 
 
-@api.transformer('"\\" to "/"')
-def t(text):
-    return text.replace("\\", "/")
+api.transformer('"\\" to "/"')(lambda text: text.replace("\\", "/"))
 
 
-@api.transformer("Decode Base64")
-def t(text):
-    return base64.decodebytes(text.encode()).decode()
+api.transformer("Decode Base64")(lambda text: base64.decodebytes(text.encode()).decode())
 
 
 @api.transformer("Extract Markdown headers")
@@ -115,30 +109,21 @@ _html_template = '''\
 def t(text):
     return _html_template.replace(
         "{{LINKS}}",
-        "\n".join('<p><a href="{0}">{0}</a></p>'.format(link) for link in text.splitlines())
-    )
-
-
-_hello_transformer_tamplate = """\
-@api.transformer("Hello {{index}}")
-def t(text):
-    return "Hello {{index}}"
-"""
+        "\n".join('<p><a href="{0}">{0}</a></p>'.format(link) for link in text.splitlines()))
 
 
 @api.transformer('Generate "Hello" transformers')
 def t(text):
     label = "Count"
+    template = 'api.transformer("Hello {{index}}")(lambda text: "Hello {{index}}")'
     sdd = api.SimpleDataDialog(
         'Generate "Hello" tranformers',
-        api.DataEntry(label, validator=lambda value: all(char in string.digits for char in value))
-    )
+        api.DataEntry(label, validator=lambda value: all(char in string.digits for char in value)))
     if not sdd.canceled:
         count = int(sdd.result[label])
-        return "\n\n".join(
-            _hello_transformer_tamplate.replace("{{index}}", str(i))
-            for i in range(1, count + 1)
-        )
+        return "\n\n\n".join(
+            template.replace("{{index}}", str(i))
+            for i in range(1, count + 1))
 
 
 # Source: https://de.wikipedia.org/w/index.php?title=VCard&oldid=166969059#vCard_4.0
@@ -218,19 +203,16 @@ def t(text):
     label = "Count of sentences"
     sdd = api.SimpleDataDialog(
         "Lorem Ipsum Generator",
-        api.DataEntry(label, 100, validator=isnumber)
-    )
+        api.DataEntry(label, 100, validator=isnumber))
 
     if not sdd.canceled:
         count = int(sdd.result[label])
-        sentences = [
+        return " ".join(
             data[2]
                 # Workaround for a bug in the loremipsum library
                 .replace("b'", "")
                 .replace("'", "")
-            for data in loremipsum.generate_sentences(count, start_with_lorem=True)
-        ]
-        return " ".join(sentences)
+            for data in loremipsum.generate_sentences(count, start_with_lorem=True))
 
 
 @api.transformer("Say Hello")
@@ -251,6 +233,4 @@ def t(text):
     raise Exception(":-P")
 
 
-@api.transformer("Return None")
-def t(text):
-    return None
+api.transformer("Return None")(lambda text: None)
