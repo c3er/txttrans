@@ -155,14 +155,15 @@ class transformer:
 class MainWindow(tkinter.Tk):
     def __init__(self, state, *args, **kw):
         self.state = state
+        self._destroyed = True
         try:
             super().__init__(*args, **kw)
+            self._destroyed = False
             self.unbind_all("<F10>")
             _bind_paste(self)
         except:
             self.destroy()
             raise
-        self._destroyed = False
 
     def destroy(self):
         if not self._destroyed:
