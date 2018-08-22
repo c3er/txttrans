@@ -2,6 +2,16 @@
 
 A tool that can transform ASCII text with help of Python code.
 
+- [Requirements](#requirements)
+- [Usage](#usage)
+  - [Example transformer](#example-transformer)
+- [Files of interest](#files-of-interest)
+  - [txttrans.pyw](#txttranspyw)
+  - [transformers.py](#transformerspy)
+  - [config.py](#configpy)
+  - [api.py](#apipy)
+- [Copyright and License](#copyright-and-license)
+
 
 ## Requirements
 

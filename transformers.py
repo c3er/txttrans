@@ -54,6 +54,25 @@ def isnumber(value):
         return False
 
 
+def first(iterable):
+    for i, element in enumerate(iterable):
+        if element:
+            return i
+    return None
+
+
+def extract_markdown_headers(content):
+    incode = False
+    lines = []
+    for line in content.splitlines():
+        line = line.strip()
+        if line.startswith("```"):
+            incode = not incode
+        if not incode and line.startswith("#"):
+            lines.append(line)
+    return "\n".join(lines)
+
+
 @api.transformer("Help")
 def t(text):
     readmepath = os.path.join(api.execdir, "README.md")
@@ -76,17 +95,7 @@ api.transformer('"\\" to "/"')(lambda text: text.replace("\\", "/"))
 api.transformer("Decode Base64")(lambda text: base64.decodebytes(text.encode()).decode())
 
 
-@api.transformer("Extract Markdown headers")
-def t(text):
-    incode = False
-    lines = []
-    for line in text.splitlines():
-        line = line.strip()
-        if line.startswith("```"):
-            incode = not incode
-        if not incode and line.startswith("#"):
-            lines.append(line)
-    return "\n".join(lines)
+api.transformer("Extract Markdown headers")(lambda text: extract_markdown_headers(text))
 
 
 @api.transformer("Align Markdown table")
@@ -111,6 +120,30 @@ def t(text):
         output_lines.append("|" + "|".join(line) + "|")
 
     return "\n".join(output_lines)
+
+
+@api.transformer("Generate Markdown table of content")
+def t(text):
+    LINK_PATTERN = r"\[|\]|<.*>|\(.*\)"
+
+    lines = [line.strip() for line in extract_markdown_headers(text).splitlines()]
+    levels = [
+        first(char != "#" for char in line)
+        for line in lines
+    ]
+    headers = [
+        re.sub(LINK_PATTERN, "", line.lstrip("# "))
+        for line in lines
+    ]
+
+    targets = []
+    for header in headers:
+        header = re.sub(LINK_PATTERN + r"|\.|`", "", header).strip()
+        targets.append("#" + re.sub(r"\s", "-", header).lower())
+
+    return "\n".join(
+        "  " * (level - 1) + f"- [{header}]({target})"
+        for level, header, target in zip(levels, headers, targets))
 
 
 @api.transformer("Links to HTML")
