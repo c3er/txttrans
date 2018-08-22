@@ -22,6 +22,38 @@ else:
     api.message.debug("External modules imported")
 
 
+HTML_LINKLIST_TEMPLATE = '''\
+<html>
+    <head>
+        <title>Links</title>
+    </head>
+    <body>
+        {{LINKS}}
+    </body>
+</html>
+'''
+
+
+class DefaultValueDict(collections.UserDict):
+    def __init__(self, default):
+        super().__init__()
+        self.default = default
+
+    def __getitem__(self, key):
+        try:
+            return self.data[key]
+        except KeyError:
+            return self.default
+
+
+def isnumber(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
+
+
 @api.transformer("Help")
 def t(text):
     readmepath = os.path.join(api.execdir, "README.md")
@@ -57,18 +89,6 @@ def t(text):
     return "\n".join(lines)
 
 
-class DefaultValueDict(collections.UserDict):
-    def __init__(self, default):
-        super().__init__()
-        self.default = default
-
-    def __getitem__(self, key):
-        try:
-            return self.data[key]
-        except KeyError:
-            return self.default
-
-
 @api.transformer("Align Markdown table")
 def t(text):
     table = []
@@ -93,45 +113,11 @@ def t(text):
     return "\n".join(output_lines)
 
 
-_html_template = '''\
-<html>
-    <head>
-        <title>Links</title>
-    </head>
-    <body>
-        {{LINKS}}
-    </body>
-</html>
-'''
-
-
 @api.transformer("Links to HTML")
 def t(text):
-    return _html_template.replace(
+    return HTML_LINKLIST_TEMPLATE.replace(
         "{{LINKS}}",
         "\n".join('<p><a href="{0}">{0}</a></p>'.format(link) for link in text.splitlines()))
-
-
-@api.transformer('Generate "Hello" transformers')
-def t(text):
-    label = "Count"
-    template = 'api.transformer("Hello {{index}}")(lambda text: "Hello {{index}}")'
-    sdd = api.SimpleDataDialog(
-        'Generate "Hello" tranformers',
-        api.DataEntry(label, validator=lambda value: all(char in string.digits for char in value)))
-    if not sdd.canceled:
-        count = int(sdd.result[label])
-        return "\n\n\n".join(
-            template.replace("{{index}}", str(i))
-            for i in range(1, count + 1))
-
-
-def isnumber(value):
-    try:
-        int(value)
-        return True
-    except ValueError:
-        return False
 
 
 @api.transformer("Lorem Ipsum Generator")
@@ -149,6 +135,20 @@ def t(text):
                 .replace("b'", "")
                 .replace("'", "")
             for data in loremipsum.generate_sentences(count, start_with_lorem=True))
+
+
+@api.transformer('Generate "Hello" transformers')
+def t(text):
+    label = "Count"
+    template = 'api.transformer("Hello {{index}}")(lambda text: "Hello {{index}}")'
+    sdd = api.SimpleDataDialog(
+        'Generate "Hello" tranformers',
+        api.DataEntry(label, validator=lambda value: all(char in string.digits for char in value)))
+    if not sdd.canceled:
+        count = int(sdd.result[label])
+        return "\n\n\n".join(
+            template.replace("{{index}}", str(i))
+            for i in range(1, count + 1))
 
 
 @api.transformer("Say Hello")

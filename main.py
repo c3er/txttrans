@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-import tkinter
 import tkinter.ttk as ttk
 
 import gui
