@@ -191,7 +191,7 @@ class TransformerManager:
         self.mainmenu = None
         self.popup = None
 
-        self.update()
+        self.root.after(0, self.update)
 
     def update(self):
         global transformers
