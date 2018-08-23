@@ -94,8 +94,7 @@ class Popup:
         self.menu.add_command(
             label=label,
             command=curry(self.dispatch, label),
-            accelerator=accelerator
-        )
+            accelerator=accelerator)
     
     def add_seperator(self):
         self.menu.add_separator()

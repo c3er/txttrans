@@ -54,7 +54,7 @@ def isnumber(value):
         return False
 
 
-def first(iterable):
+def first_index(iterable):
     for i, element in enumerate(iterable):
         if element:
             return i
@@ -128,7 +128,7 @@ def t(text):
 
     lines = [line.strip() for line in extract_markdown_headers(text).splitlines()]
     levels = [
-        first(char != "#" for char in line)
+        first_index(char != "#" for char in line)
         for line in lines
     ]
     headers = [

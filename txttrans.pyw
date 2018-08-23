@@ -17,8 +17,7 @@ class ErrorHandler:
             parent,
             font=("Consolas", 10, 'normal'),
             background="black",
-            foreground="orange"
-        )
+            foreground="orange")
         setup_scrollbars(parent, self.textbox)
 
         self.textbox.insert("end", tb)

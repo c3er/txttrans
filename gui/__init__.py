@@ -179,7 +179,7 @@ class MainWindow(tkinter.Tk):
         message.error("Exception occured:", ''.join(msg))
 
 
-class TransformerManager:
+class TransformerLoader:
     def __init__(self, root):
         self.root = root
 
@@ -191,9 +191,9 @@ class TransformerManager:
         self.mainmenu = None
         self.popup = None
 
-        self.root.after(0, self.update)
+        self.root.after(0, self._update)
 
-    def update(self):
+    def _update(self):
         global transformers
         try:
             with open(self.transfomer_file, encoding="utf8") as f:
@@ -211,7 +211,7 @@ class TransformerManager:
                 self._update_ui(transformers)
                 message.debug("Transformers updated")
         finally:
-            self.root.after(1000, self.update)
+            self.root.after(1000, self._update)
 
     def _update_ui(self, transformers):
         if self.mainmenu:
@@ -270,8 +270,7 @@ class MainText:
     def __init__(self, parent):
         self.textbox = tkinter.Text(
             parent,
-            font=(config.font, config.fontsize, 'normal')
-        )
+            font=(config.font, config.fontsize, 'normal'))
         _bind_paste(self.textbox)
         gui.base.setup_scrollbars(parent, self.textbox)
         self.textbox.focus_set()
@@ -337,8 +336,9 @@ class MainText:
     def _handle_too_big_text(self, text):
         self.too_big_text = text
         self.text_is_too_big = True
-        msg = "Desired text is too big to display. But it is remembered and in the clipboard."
-        self.textbox.insert("1.0", msg)
+        self.textbox.insert(
+            "1.0",
+            "Desired text is too big to display. But it is remembered and in the clipboard.")
 
 
 class DataEntry:

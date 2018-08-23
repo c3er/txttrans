@@ -52,7 +52,7 @@ def main():
     pw.add(main_area(pw), weight=100)
     pw.add(message_area(pw), weight=1)
     
-    gui.TransformerManager(root)
+    gui.TransformerLoader(root)
 
     message.debug("Initialized")
     message.info("Initialized")

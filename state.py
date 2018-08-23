@@ -33,9 +33,7 @@ _y = _dummy.winfo_screenheight() // 2 - DEFAULT_HEIGHT // 2
 
 _dummy.destroy()
 
-_default_state = State(
-    window_geometry=f"{DEFAULT_WIDTH}x{DEFAULT_HEIGHT}+{_x}+{_y}"
-)
+_default_state = State(window_geometry=f"{DEFAULT_WIDTH}x{DEFAULT_HEIGHT}+{_x}+{_y}")
 
 
 def load():

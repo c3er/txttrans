@@ -22,8 +22,7 @@ class MessageHandler:
         self.textbox = tkinter.Text(
             parent,
             font=(config.messagefont, config.messagefontsize, 'normal'),
-            background="black"
-        )
+            background="black")
         self.textbox.config(state="disabled")
         gui.base.setup_scrollbars(parent, self.textbox)
         self._configcolors()
