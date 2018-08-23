@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import sys
 import os
 import traceback
 
@@ -168,8 +169,9 @@ class MainWindow(tkinter.Tk):
     def destroy(self):
         if not self._destroyed:
             try:
-                self.state.window_geometry = self.geometry()
-                self.state.save()
+                if sys.exc_info() == (None, None, None):
+                    self.state.window_geometry = self.geometry()
+                    self.state.save()
             finally:
                 super().destroy()
                 self._destroyed = True
