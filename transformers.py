@@ -111,15 +111,14 @@ def t(text):
             if column_lengths[i] < cellsize:
                 column_lengths[i] = cellsize
 
-    normalized_table = []
-    for line in table:
-        normalized_table.append([" " + cell.ljust(column_lengths[i] + 1) for i, cell in enumerate(line)])
+    normalized_table = [
+        [" " + cell.ljust(column_lengths[i] + 1) for i, cell in enumerate(line)]
+        for line in table
+    ]
 
-    output_lines = []
-    for line in normalized_table:
-        output_lines.append("|" + "|".join(line) + "|")
-
-    return "\n".join(output_lines)
+    return "\n".join(
+        "|" + "|".join(line) + "|"
+        for line in normalized_table)
 
 
 @api.transformer("Generate Markdown table of content")
