@@ -137,7 +137,7 @@ def t(text):
 
     targets = []
     for header in headers:
-        header = re.sub(LINK_PATTERN + r"|\.|`", "", header).strip()
+        header = re.sub(LINK_PATTERN + r"|\.|`|\{|\}", "", header).strip()
         targets.append("#" + re.sub(r"\s", "-", header).lower())
 
     return "\n".join(
