@@ -100,9 +100,20 @@ api.transformer("Extract Markdown headers")(lambda text: extract_markdown_header
 
 @api.transformer("Align Markdown table")
 def t(text):
-    table = []
-    for line in text.splitlines():
-        table.append([cell.strip() for cell in line.strip().split("|") if cell])
+    # Regard literal pipe "\|"
+    # Example: https://github.com/mity/md4c/wiki/Markdown-Syntax:-Tables
+    text = text.replace("\\|", "{{LITERAL_PIPE}}")
+
+    table = [
+        [
+            cell
+                .strip()
+                .replace("{{LITERAL_PIPE}}", "\\|")
+            for cell in line.strip().split("|")
+            if cell
+        ]
+        for line in text.splitlines()
+    ]
 
     column_lengths = DefaultValueDict(0)
     for line in table:
