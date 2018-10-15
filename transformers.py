@@ -8,6 +8,7 @@ import collections
 import base64
 import re
 import string
+import html
 
 import api
 
@@ -214,3 +215,6 @@ def t(text):
 
 
 api.transformer("Return None")(lambda text: None)
+
+
+api.transformer("Unescape HTML characters")(lambda text: html.unescape(text))
