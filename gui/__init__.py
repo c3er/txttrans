@@ -187,7 +187,6 @@ class TransformerLoader:
 
         self.transfomer_file = os.path.join(misc.getstarterdir(), TRANSFORMER_FILE)
         self.oldcode = None
-        self.namespace = None
 
         self.menubar = None
         self.mainmenu = None
@@ -207,15 +206,15 @@ class TransformerLoader:
 
                 code = compile(codestr, self.transfomer_file, "exec")
                 transformers = []
-                self.namespace = globals().copy()
-                exec(code, self.namespace)
+                namespace = globals().copy()
+                exec(code, namespace)
 
-                self._update_ui(transformers)
+                self._update_ui(transformers, namespace)
                 message.debug("Transformers updated")
         finally:
             self.root.after(1000, self._update)
 
-    def _update_ui(self, transformers):
+    def _update_ui(self, transformers, namespace):
         if self.mainmenu:
             self.mainmenu.destroy()
         if self.popup:
@@ -228,13 +227,13 @@ class TransformerLoader:
 
         for i, t in enumerate(transformers):
             label = t.label
-            handler = lambda event=None, t=t, n=self.namespace: self._handle_transformer(t, n)
+            handler = lambda event=None, t=t, n=namespace: self._handle_transformer(t, n)
             keystring = self._get_keystring(i)
             if keystring:
                 self.root.bind(f"<{keystring}>", handler)
             self.mainmenu.add_item(label, handler, accelerator=keystring)
             self.popup.add_entry(label, handler, keystring)
-            
+
         self.root.bind('<Button-3>', self.popup.display)
 
     @staticmethod
