@@ -164,6 +164,9 @@ def t(text):
         "\n".join('<p><a href="{0}">{0}</a></p>'.format(link) for link in text.splitlines()))
 
 
+api.transformer("Unescape HTML characters")(lambda text: html.unescape(text))
+
+
 @api.transformer("Lorem Ipsum Generator")
 def t(text):
     label = "Count of sentences"
@@ -180,6 +183,8 @@ def t(text):
                 .replace("'", "")
             for data in loremipsum.generate_sentences(count, start_with_lorem=True))
 
+
+# Debugging ####################################################################
 
 @api.transformer('Generate "Hello" transformers')
 def t(text):
@@ -203,10 +208,9 @@ def t(text):
         api.DataEntry("No meaning"),
     ]
     sdd = api.SimpleDataDialog("Hello", entries)
-    result = sdd.result
-    if result:
+    if not sdd.canceled:
+        result = sdd.result
         return "Hello {} {}".format(result["Forename"], result["Surname"])
-    return text
 
 
 @api.transformer("Raise exception")
@@ -216,5 +220,4 @@ def t(text):
 
 api.transformer("Return None")(lambda text: None)
 
-
-api.transformer("Unescape HTML characters")(lambda text: html.unescape(text))
+################################################################################
