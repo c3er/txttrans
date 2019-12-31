@@ -6,7 +6,6 @@ import base64
 import collections
 import html
 import json
-import os
 import re
 
 import api
@@ -71,13 +70,6 @@ def extract_markdown_headers(content):
         if not incode and line.startswith("#"):
             lines.append(line)
     return "\n".join(lines)
-
-
-@api.transformer("Help")
-def t(text):
-    readmepath = os.path.join(api.execdir, "README.md")
-    with open(readmepath, encoding="utf8") as f:
-        return f.read()
 
 
 @api.transformer("Beatify JSON")
@@ -193,40 +185,3 @@ api.transformer("Break lines at column 120")(
 
 
 api.transformer("Reverse lines")(lambda text: "\n".join(reversed(text.splitlines())))
-
-
-# Debugging ####################################################################
-
-@api.transformer('Generate "Hello" transformers')
-def t(text):
-    label = "Count"
-    template = 'api.transformer("Hello {{index}}")(lambda text: "Hello {{index}}")'
-    sdd = api.SimpleDataDialog('Generate "Hello" tranformers', api.DataEntry(label, validator=isnumber))
-    if not sdd.canceled:
-        count = int(sdd.result[label])
-        return "\n\n\n".join(
-            template.replace("{{index}}", str(i))
-            for i in range(1, count + 1))
-
-
-@api.transformer("Say Hello")
-def t(text):
-    entries = [
-        api.DataEntry("Forename", validator=lambda value: value == "Tom"),
-        api.DataEntry("Surname", "Jones", validator=bool),
-        api.DataEntry("No meaning"),
-    ]
-    sdd = api.SimpleDataDialog("Hello", entries)
-    if not sdd.canceled:
-        result = sdd.result
-        return f"Hello {result['Forename']} {result['Surname']}"
-
-
-@api.transformer("Raise exception")
-def t(text):
-    raise Exception(":-P")
-
-
-api.transformer("Return None")(lambda text: None)
-
-################################################################################
