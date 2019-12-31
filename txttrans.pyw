@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import sys
 import types
 import traceback
 import tkinter
@@ -9,6 +10,16 @@ import tkinter.ttk as ttk
 
 
 ERRORWINDOW_SIZE = "800x600"
+
+
+# Taken from the Python repository at https://github.com/python/cpython.git
+# Commit ID 800415e3df69f494afe9f95a8563ce17609fe1da
+if sys.platform == 'win32':
+    import ctypes
+    try:
+        ctypes.OleDLL('shcore').SetProcessDpiAwareness(1)
+    except (AttributeError, OSError):
+        pass
 
 
 class ErrorHandler:
@@ -49,7 +60,7 @@ def main():
         main.main()
     except:
         error = traceback.format_exc()
-        
+
         try:
             import main
         except:
