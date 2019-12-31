@@ -192,6 +192,9 @@ api.transformer("Break lines at column 120")(
     lambda text: re.sub(r"(.{60,120})\s", r"\1\n", text, flags=re.MULTILINE))
 
 
+api.transformer("Reverse lines")(lambda text: "\n".join(reversed(text.splitlines())))
+
+
 # Debugging ####################################################################
 
 @api.transformer('Generate "Hello" transformers')
