@@ -175,6 +175,19 @@ def t(text):
             for data in loremipsum.generate_sentences(count, start_with_lorem=True))
 
 
+@api.transformer("Filter lines")
+def t(text):
+    label = "Pattern"
+    dialog = api.SimpleDataDialog(
+        "Filter lines",
+        api.DataEntry(label, validator=bool))
+    if not dialog.canceled:
+        return "\n".join(
+            line
+            for line in text.splitlines()
+            if re.match(dialog.result[label], line))
+
+
 # Debugging ####################################################################
 
 @api.transformer('Generate "Hello" transformers')
