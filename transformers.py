@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
-import os
-import json
-import collections
 import base64
-import re
-import string
+import collections
 import html
+import json
+import os
+import re
 
 import api
 
@@ -96,7 +95,7 @@ api.transformer('"\\" to "/"')(lambda text: text.replace("\\", "/"))
 api.transformer("Decode Base64")(lambda text: base64.decodebytes(text.encode()).decode())
 
 
-api.transformer("Extract Markdown headers")(lambda text: extract_markdown_headers(text))
+api.transformer("Extract Markdown headers")(extract_markdown_headers)
 
 
 @api.transformer("Align Markdown table")
@@ -128,9 +127,7 @@ def t(text):
         for line in table
     ]
 
-    return "\n".join(
-        "|" + "|".join(line) + "|"
-        for line in normalized_table)
+    return "\n".join("|" + "|".join(line) + "|" for line in normalized_table)
 
 
 @api.transformer("Generate Markdown table of content")
@@ -138,14 +135,8 @@ def t(text):
     LINK_PATTERN = r"\[|\]|<.*>|\(.*\)"
 
     lines = [line.strip() for line in extract_markdown_headers(text).splitlines()]
-    levels = [
-        first_index(char != "#" for char in line)
-        for line in lines
-    ]
-    headers = [
-        re.sub(LINK_PATTERN, "", line.lstrip("# "))
-        for line in lines
-    ]
+    levels = [first_index(char != "#" for char in line) for line in lines]
+    headers = [re.sub(LINK_PATTERN, "", line.lstrip("# ")) for line in lines]
 
     targets = []
     for header in headers:
@@ -190,9 +181,7 @@ def t(text):
 def t(text):
     label = "Count"
     template = 'api.transformer("Hello {{index}}")(lambda text: "Hello {{index}}")'
-    sdd = api.SimpleDataDialog(
-        'Generate "Hello" tranformers',
-        api.DataEntry(label, validator=lambda value: all(char in string.digits for char in value)))
+    sdd = api.SimpleDataDialog('Generate "Hello" tranformers', api.DataEntry(label, validator=isnumber))
     if not sdd.canceled:
         count = int(sdd.result[label])
         return "\n\n\n".join(
@@ -210,7 +199,7 @@ def t(text):
     sdd = api.SimpleDataDialog("Hello", entries)
     if not sdd.canceled:
         result = sdd.result
-        return "Hello {} {}".format(result["Forename"], result["Surname"])
+        return f"Hello {result['Forename']} {result['Surname']}"
 
 
 @api.transformer("Raise exception")
