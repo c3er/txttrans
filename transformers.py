@@ -188,6 +188,10 @@ def t(text):
             if re.match(dialog.result[label], line))
 
 
+api.transformer("Break lines at column 120")(
+    lambda text: re.sub(r"(.{60,120})\s", r"\1\n", text, flags=re.MULTILINE))
+
+
 # Debugging ####################################################################
 
 @api.transformer('Generate "Hello" transformers')
