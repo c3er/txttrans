@@ -84,7 +84,7 @@ api.transformer("Beautify XML")(lambda text: str(xmllib.str2xml(text)))
 api.transformer('"\\" to "/"')(lambda text: text.replace("\\", "/"))
 
 
-api.transformer("Decode Base64")(lambda text: base64.decodebytes(text.encode()).decode())
+api.transformer("Decode Base64")(lambda text: base64.decodebytes(text.encode()).decode(errors="replace"))
 
 
 api.transformer("Extract Markdown headers")(extract_markdown_headers)
