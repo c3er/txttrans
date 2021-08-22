@@ -87,6 +87,9 @@ api.transformer('"\\" to "/"')(lambda text: text.replace("\\", "/"))
 api.transformer('"/" to "\\"')(lambda text: text.replace("/", "\\"))
 
 
+api.transformer("Unescape backslashes")(lambda text: text.replace(r"\\", "\\"))
+
+
 api.transformer("Decode Base64")(lambda text: base64.decodebytes(text.encode()).decode(errors="replace"))
 
 
