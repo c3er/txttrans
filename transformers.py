@@ -7,6 +7,7 @@ import collections
 import html
 import json
 import re
+import uuid
 
 import api
 
@@ -191,3 +192,6 @@ api.transformer("Break lines at column 120")(
 
 
 api.transformer("Reverse lines")(lambda text: "\n".join(reversed(text.splitlines())))
+
+
+api.transformer("Generate GUID")(lambda _: str(uuid.uuid4()))
