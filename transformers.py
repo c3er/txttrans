@@ -195,3 +195,6 @@ api.transformer("Reverse lines")(lambda text: "\n".join(reversed(text.splitlines
 
 
 api.transformer("Generate GUID")(lambda _: str(uuid.uuid4()))
+
+
+api.transformer("Join list by spaces")(lambda text: " ".join({word for word in text.strip().split()}))
