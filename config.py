@@ -3,11 +3,11 @@
 
 
 # Main text area
-font = "Consolas"
-fontsize = 10
+font = "Cascadia Mono"
+fontsize = 9
 
 # Message area
-messagefont = "Consolas"
-messagefontsize = 10
+messagefont = "Cascadia Mono"
+messagefontsize = 9
 
 debug = True
