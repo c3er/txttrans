@@ -198,3 +198,10 @@ api.transformer("Generate GUID")(lambda _: str(uuid.uuid4()))
 
 
 api.transformer("Join list by spaces")(lambda text: " ".join({word for word in text.strip().split()}))
+
+
+api.transformer("Unescape JSON string")(lambda text:
+    text
+        .replace(r"\\", "\\")
+        .replace(r"\r\n", "\n")
+        .replace("\\n", "\n"))
