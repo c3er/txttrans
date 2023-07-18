@@ -205,3 +205,6 @@ api.transformer("Unescape JSON string")(lambda text:
         .replace(r"\\", "\\")
         .replace(r"\r\n", "\n")
         .replace("\\n", "\n"))
+
+
+api.transformer("Hex to hex string")(lambda text: '"\\x{}"'.format(text.replace(" ", "\\x").lower()))
