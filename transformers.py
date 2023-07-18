@@ -208,3 +208,10 @@ api.transformer("Unescape JSON string")(lambda text:
 
 
 api.transformer("Hex to hex string")(lambda text: '"\\x{}"'.format(text.replace(" ", "\\x").lower()))
+
+
+api.transformer("Print Python list")(lambda text: text
+    .replace("[", "")
+    .replace("]", "")
+    .replace("'", "")
+    .replace(", ", "\n"))
